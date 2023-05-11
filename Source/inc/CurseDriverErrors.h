@@ -1,0 +1,11 @@
+#ifndef CURSE_DRIVER_ERRORS_H_
+#define CURSE_DRIVER_ERRORS_H_
+
+typedef enum
+{
+    NO_ERROR,
+    CREATION_FAILED,
+    DRIVER_INTERNAL_OPERATION_FAILURE
+} CurseDriverErrors;
+
+#endif

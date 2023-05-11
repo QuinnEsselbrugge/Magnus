@@ -1,13 +1,13 @@
 PRODUCT=Magnus
 
-CFLAGS=-Wall -Werror -Wextra -pedantic -ggdb -O0 -Iproduct -Iproduct/interfaces
+CFLAGS=-Wall -Werror -Wextra -pedantic -ggdb -O0 -Iproduct -Iproduct/interfaces -std=c++17
 
-SOURCES=$(wildcard src/*.c) $(wildcard inc/*.c)
+SOURCES=$(wildcard src/*.cpp) $(wildcard inc/*.cpp)
 HEADERS=$(wildcard inc/*.h) \
 
 LIBS=-lpthread
 
-CC=gcc
+CC=g++
 
 .phony: all clean klocwork klocwork_after_makefile_change
 

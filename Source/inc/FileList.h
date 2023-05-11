@@ -5,7 +5,17 @@
 
 // Stddef for widgets
 
-WidgetErrors Build(int *pos);
+class FileList
+{
+
+    public:
+        FileList(/* args */);
+        ~FileList();
+        
+        WidgetErrors Build(int *pos);
+
+    private:
+};
 
 
 #endif
