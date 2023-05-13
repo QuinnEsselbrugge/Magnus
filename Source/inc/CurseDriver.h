@@ -23,7 +23,7 @@ class CurseDriver
         CurseDriver();
         ~CurseDriver();
 
-        CurseDriverErrors CreateMenu(int handle, std::string choices[MAX_LIST_ITEMS], int nrChoices, Sizing sizings, int colors[MAX_COLORS_MENU]);
+        CurseDriverErrors CreateMenu(int handle, std::string choices[MAX_LIST_ITEMS], int nrChoices, Sizing sizings);
         
         CurseDriverErrors DisplayMenu(int handle);
         
@@ -44,6 +44,12 @@ class CurseDriver
         Menu m_menus[MAX_NR_MENUS];
 
         CurseDriverErrors InsertItemChoices(ITEM **curseItems, std::string *choices, int nrChoices);
+        
+        int GetStringWidth(std::string str);
+        std::string StringElipsis(std::string str, int cutoffSize);
+        std::string ShortenString(std::string str, int amount);
+        
+        int GetMenu(int handle);
 
         void DestroyMenus();
 };

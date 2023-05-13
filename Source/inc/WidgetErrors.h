@@ -3,9 +3,9 @@
 
 typedef enum
 {
-    NO_ERROR,
-    CREATION_FAILED,
-    OPERATION_FAILED,
+    NO_ERROR_WIDGET,
+    CREATION_FAILED_WIDGET,
+    OPERATION_FAILED_WIDGET,
 } WidgetErrors;
 
 #endif

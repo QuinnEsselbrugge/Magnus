@@ -23,9 +23,9 @@ CurseDriver::CurseDriver()
 
 CurseDriver::~CurseDriver()
 {
-    endwin();
-
     DestroyMenus();
+
+    endwin();
 }
 
 
@@ -33,15 +33,24 @@ CurseDriver::~CurseDriver()
     Creationists
 */
 
-CurseDriverErrors CurseDriver::CreateMenu(int handle, std::string choices[MAX_LIST_ITEMS], int nrChoices, Sizing sizings, int colors[MAX_COLORS_MENU])
+CurseDriverErrors CurseDriver::CreateMenu(int handle, std::string choices[MAX_LIST_ITEMS], int nrChoices, Sizing sizings)
 {
     Menu *menu = (Menu *) calloc(1, sizeof(Menu));
+
+    if (menu == nullptr)
+    {
+        return CurseDriverErrors::DRIVER_INTERNAL_OPERATION_FAILURE_CURSE;
+    }
     
     // Init items
     menu->curseItems = (ITEM **) calloc(nrChoices + 1, sizeof(ITEM *));
-    InsertItemChoices(menu->curseItems, choices, nrChoices);
 
-    // menu.curseItems[nrChoices] = (ITEM *) NULL
+    if (menu->curseItems == nullptr)
+    {
+        return CurseDriverErrors::DRIVER_INTERNAL_OPERATION_FAILURE_CURSE;
+    }
+
+    InsertItemChoices(menu->curseItems, choices, nrChoices);
 
     // Create menu
     menu->curseMenu = new_menu((ITEM **)menu->curseItems);
@@ -50,16 +59,21 @@ CurseDriverErrors CurseDriver::CreateMenu(int handle, std::string choices[MAX_LI
     menu->curseWindow = newwin(sizings.height, sizings.width, sizings.startY, sizings.startX);
     keypad(menu->curseWindow, TRUE);
 
-    init_pair(handle, colors[0], colors[1]);
+    init_pair(handle, COLOR_BLACK, COLOR_WHITE);
 
     std::copy(choices, choices + nrChoices, menu->choices);
     menu->nrItems = nrChoices;
     menu->sizing = sizings;
     menu->handle = handle;
-    
+
+    set_menu_win(menu->curseMenu, menu->curseWindow);
+    post_menu(menu->curseMenu);
+
     m_menus[0] = *menu;
 
-    return CurseDriverErrors::NO_ERROR;
+    DisplayMenu(handle);
+
+    return CurseDriverErrors::NO_ERROR_CURSE;
 }
 
 /*!
@@ -68,42 +82,37 @@ CurseDriverErrors CurseDriver::CreateMenu(int handle, std::string choices[MAX_LI
 
 CurseDriverErrors CurseDriver::DisplayMenu(int handle)
 {
-    Menu menu;
-
-    // Todo convert to getter, WONT LET ME? IDK WHY
-    int nrMenus = sizeof(m_menus) / sizeof(m_menus[0]);
-
-    for (int i = 0; i < nrMenus; i++)
-    {
-        if (m_menus[i].handle == handle)
-        {
-            menu = m_menus[i];
-        }
-    }
-
+    Menu menu = m_menus[GetMenu(handle)];
+    
     if (menu.handle == 0)
     {
-        return CurseDriverErrors::DRIVER_INTERNAL_OPERATION_FAILURE;
+        return CurseDriverErrors::DRIVER_INTERNAL_OPERATION_FAILURE_CURSE;
     }
 
     // tmp pseudo
-    int y = 2;
+    int y = 1;
     int x = 2;
 
     box(menu.curseWindow, 0, 0);
 
     for (int i = 0; i < menu.nrItems; i++)
     {
-        
-        mvwprintw(menu.curseWindow, y, x, "%s", menu.choices[i].c_str());
+        std::string strOut = menu.choices[i];
+        int stringWidth = GetStringWidth(menu.choices[i]);
+
+        if (stringWidth > menu.sizing.width)
+        {       
+            strOut = StringElipsis(strOut, menu.sizing.width);
+        }
+
+        mvwprintw(menu.curseWindow, y, x, "%s", strOut.c_str());
 
         y++;
     }
 
     wrefresh(menu.curseWindow);
 
-
-    return CurseDriverErrors::NO_ERROR;
+    return CurseDriverErrors::NO_ERROR_CURSE;
 }
 
 
@@ -115,7 +124,7 @@ CurseDriverErrors CurseDriver::InsertItemChoices(ITEM **curseItems, std::string 
 {   
     if (curseItems == nullptr && choices == nullptr && nrChoices <= 0)
     {
-        return CurseDriverErrors::DRIVER_INTERNAL_OPERATION_FAILURE;
+        return CurseDriverErrors::DRIVER_INTERNAL_OPERATION_FAILURE_CURSE;
     }
 
     for (int i = 0; i < nrChoices; i++)
@@ -123,13 +132,93 @@ CurseDriverErrors CurseDriver::InsertItemChoices(ITEM **curseItems, std::string 
         curseItems[i] = new_item(choices[i].c_str(), choices[i].c_str());
     }
 
-    return CurseDriverErrors::NO_ERROR;
+    return CurseDriverErrors::NO_ERROR_CURSE;
+}
+
+std::string CurseDriver::StringElipsis(std::string str, int cutoffSize)
+{
+    std::string strOut;
+    int stringWidth = GetStringWidth(str);
+
+    // Rudimentary elipsis  
+    int diff = stringWidth - cutoffSize;
+
+    int elipsisWidth = GetStringWidth("...");
+
+    diff = diff + elipsisWidth;
+
+    // buffer of ~3 pixels. blame bash fuckiness
+    strOut = ShortenString(str, diff + 3);
+
+    strOut.append("...");
+
+    return strOut;
+}
+
+int CurseDriver::GetStringWidth(std::string str)
+{
+    int total = 0;
+
+    for (long unsigned int i = 0; i < str.length(); i++)
+    {
+        total += wcwidth(str[i]);
+    }
+
+    return total;
+}
+
+std::string CurseDriver::ShortenString(std::string str, int amount)
+{
+    int total = 0;
+    int strIndex = 1;
+
+    int strLen = str.length();
+
+    for (int i = 0; i < strLen; i++)
+    {
+        total += wcwidth(str[strLen - strIndex]);
+        str.pop_back();
+
+        // todo fix why its not doing enough characters, lol
+        strIndex++;
+
+        if (total >= amount)
+        { 
+            return str;
+        }
+    }
+    // for (long unsigned int i = str.length(); i > 0; i--)
+    // {
+    //     total += wcwidth(str[i]);
+    //     std::cout << wcwidth(str[i + 1]) << "\n";
+    //     str.pop_back();
+
+    //     if (total >= amount - 1)
+    //     {
+    //         return str;
+    //     }
+    // }
+    
+    return str;
 }
 
 
 /*!
     Getters
 */
+int CurseDriver::GetMenu(int handle)
+{
+
+    for (int i = 0; i < MAX_NR_MENUS; i++)
+    {
+        if (m_menus[i].handle == handle)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
 
 
 
@@ -139,9 +228,14 @@ CurseDriverErrors CurseDriver::InsertItemChoices(ITEM **curseItems, std::string 
 
 void CurseDriver::DestroyMenus()
 {
-    for (int i = 0; i < MAX_NR_MENUS; i++)
+    for (long unsigned int i = 0; i < MAX_NR_MENUS; i++)
     {
-        delete m_menus[i].curseItems;
-        m_menus[i].curseItems = nullptr;
+        for (int x = 0; x < m_menus[i].nrItems; x++)
+        {
+            free_item(m_menus[i].curseItems[x]);    
+        }
+
+        unpost_menu(m_menus[i].curseMenu);
+        free_menu(m_menus[i].curseMenu);
     }
 }

@@ -1,0 +1,537 @@
+==27767== Memcheck, a memory error detector
+==27767== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==27767== Using Valgrind-3.15.0-608cb11914-20190413 and LibVEX; rerun with -h for copyright info
+==27767== Command: ./Magnus
+==27767== Parent PID: 19696
+==27767== 
+--27767-- 
+--27767-- Valgrind options:
+--27767--    --leak-check=full
+--27767--    --show-leak-kinds=all
+--27767--    --track-origins=yes
+--27767--    --verbose
+--27767--    --log-file=valgrind-out.txt
+--27767-- Contents of /proc/version:
+--27767--   Linux version 5.15.0-71-generic (buildd@lcy02-amd64-111) (gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #78~20.04.1-Ubuntu SMP Wed Apr 19 11:26:48 UTC 2023
+--27767-- 
+--27767-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-ssse3-avx-avx2-bmi-f16c-rdrand
+--27767-- Page sizes: currently 4096, max supported 4096
+--27767-- Valgrind library directory: /usr/lib/x86_64-linux-gnu/valgrind
+--27767-- Reading syms from /media/quinn/New Volume/Projects2023/magnus/Source/Magnus
+--27767-- Reading syms from /usr/lib/x86_64-linux-gnu/ld-2.31.so
+--27767--   Considering /usr/lib/x86_64-linux-gnu/ld-2.31.so ..
+--27767--   .. CRC mismatch (computed 0306b78c wanted 8d362b37)
+--27767--   Considering /lib/x86_64-linux-gnu/ld-2.31.so ..
+--27767--   .. CRC mismatch (computed 0306b78c wanted 8d362b37)
+--27767--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/ld-2.31.so ..
+--27767--   .. CRC is valid
+--27767-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/memcheck-amd64-linux
+--27767--    object doesn't have a symbol table
+--27767--    object doesn't have a dynamic symbol table
+--27767-- Scheduler: using generic scheduler lock implementation.
+--27767-- Reading suppressions file: /usr/lib/x86_64-linux-gnu/valgrind/default.supp
+==27767== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-27767-by-quinn-on-???
+==27767== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-27767-by-quinn-on-???
+==27767== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-27767-by-quinn-on-???
+==27767== 
+==27767== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==27767== don't want to do, unless you know exactly what you're doing,
+==27767== or are doing some strange experiment):
+==27767==   /usr/lib/x86_64-linux-gnu/valgrind/../../bin/vgdb --pid=27767 ...command...
+==27767== 
+==27767== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==27767==   /path/to/gdb ./Magnus
+==27767== and then give GDB the following command
+==27767==   target remote | /usr/lib/x86_64-linux-gnu/valgrind/../../bin/vgdb --pid=27767
+==27767== --pid is optional if only one valgrind process is running
+==27767== 
+--27767-- REDIR: 0x4022e10 (ld-linux-x86-64.so.2:strlen) redirected to 0x580c9ce2 (???)
+--27767-- REDIR: 0x4022be0 (ld-linux-x86-64.so.2:index) redirected to 0x580c9cfc (???)
+--27767-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_core-amd64-linux.so
+--27767--    object doesn't have a symbol table
+--27767-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so
+--27767--    object doesn't have a symbol table
+==27767== WARNING: new redirection conflicts with existing -- ignoring it
+--27767--     old: 0x04022e10 (strlen              ) R-> (0000.0) 0x580c9ce2 ???
+--27767--     new: 0x04022e10 (strlen              ) R-> (2007.0) 0x0483f060 strlen
+--27767-- REDIR: 0x401f5f0 (ld-linux-x86-64.so.2:strcmp) redirected to 0x483ffd0 (strcmp)
+--27767-- REDIR: 0x4023370 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4843a20 (mempcpy)
+--27767-- Reading syms from /usr/lib/x86_64-linux-gnu/libncurses.so.6.2
+--27767--    object doesn't have a symbol table
+--27767-- Reading syms from /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2
+--27767--    object doesn't have a symbol table
+--27767-- Reading syms from /usr/lib/x86_64-linux-gnu/libmenu.so.6.2
+--27767--    object doesn't have a symbol table
+--27767-- Reading syms from /usr/lib/x86_64-linux-gnu/libpthread-2.31.so
+--27767--   Considering /usr/lib/debug/.build-id/f0/983025f0e0f327a6da752ff4ffa675e0be393f.debug ..
+--27767--   .. build-id is valid
+--27767-- Reading syms from /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28
+--27767--    object doesn't have a symbol table
+--27767-- Reading syms from /usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+--27767--    object doesn't have a symbol table
+--27767-- Reading syms from /usr/lib/x86_64-linux-gnu/libc-2.31.so
+--27767--   Considering /usr/lib/x86_64-linux-gnu/libc-2.31.so ..
+--27767--   .. CRC mismatch (computed ef41b1a0 wanted f854b801)
+--27767--   Considering /lib/x86_64-linux-gnu/libc-2.31.so ..
+--27767--   .. CRC mismatch (computed ef41b1a0 wanted f854b801)
+--27767--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libc-2.31.so ..
+--27767--   .. CRC is valid
+--27767-- Reading syms from /usr/lib/x86_64-linux-gnu/libdl-2.31.so
+--27767--   Considering /usr/lib/x86_64-linux-gnu/libdl-2.31.so ..
+--27767--   .. CRC mismatch (computed 2bb25318 wanted f334bb32)
+--27767--   Considering /lib/x86_64-linux-gnu/libdl-2.31.so ..
+--27767--   .. CRC mismatch (computed 2bb25318 wanted f334bb32)
+--27767--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libdl-2.31.so ..
+--27767--   .. CRC is valid
+--27767-- Reading syms from /usr/lib/x86_64-linux-gnu/libm-2.31.so
+--27767--   Considering /usr/lib/x86_64-linux-gnu/libm-2.31.so ..
+--27767--   .. CRC mismatch (computed 3cfca93f wanted 658b15c9)
+--27767--   Considering /lib/x86_64-linux-gnu/libm-2.31.so ..
+--27767--   .. CRC mismatch (computed 3cfca93f wanted 658b15c9)
+--27767--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libm-2.31.so ..
+--27767--   .. CRC is valid
+--27767-- REDIR: 0x4b8d4b0 (libc.so.6:memmove) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8c7b0 (libc.so.6:strncpy) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8d7e0 (libc.so.6:strcasecmp) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8c0d0 (libc.so.6:strcat) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8c810 (libc.so.6:rindex) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8ec80 (libc.so.6:rawmemchr) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4ba9d10 (libc.so.6:wmemchr) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4ba9850 (libc.so.6:wcscmp) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8d610 (libc.so.6:mempcpy) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8d440 (libc.so.6:bcmp) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8c740 (libc.so.6:strncmp) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8c180 (libc.so.6:strcmp) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8d570 (libc.so.6:memset) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4ba9810 (libc.so.6:wcschr) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8c6a0 (libc.so.6:strnlen) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8c260 (libc.so.6:strcspn) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8d830 (libc.so.6:strncasecmp) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8c200 (libc.so.6:strcpy) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8d980 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4baaf80 (libc.so.6:wcsnlen) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4ba9890 (libc.so.6:wcscpy) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8c850 (libc.so.6:strpbrk) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8c130 (libc.so.6:index) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8c660 (libc.so.6:strlen) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b95bd0 (libc.so.6:memrchr) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8d880 (libc.so.6:strcasecmp_l) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8d400 (libc.so.6:memchr) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4ba9960 (libc.so.6:wcslen) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8cb10 (libc.so.6:strspn) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8d780 (libc.so.6:stpncpy) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8d720 (libc.so.6:stpcpy) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8ecc0 (libc.so.6:strchrnul) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8d8d0 (libc.so.6:strncasecmp_l) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8c6e0 (libc.so.6:strncat) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4c1a880 (libc.so.6:__memcpy_chk) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4b8d320 (libc.so.6:strstr) redirected to 0x48311d0 (_vgnU_ifunc_wrapper)
+--27767-- REDIR: 0x4c75410 (libc.so.6:__strrchr_avx2) redirected to 0x483ea10 (rindex)
+--27767-- REDIR: 0x4b87110 (libc.so.6:malloc) redirected to 0x483b780 (malloc)
+--27767-- REDIR: 0x4c755e0 (libc.so.6:__strlen_avx2) redirected to 0x483ef40 (strlen)
+--27767-- REDIR: 0x4c71bd0 (libc.so.6:__memcmp_avx2_movbe) redirected to 0x48421e0 (bcmp)
+--27767-- REDIR: 0x4c70ae0 (libc.so.6:__strcmp_avx2) redirected to 0x483fed0 (strcmp)
+--27767-- REDIR: 0x4c70f20 (libc.so.6:__strncmp_avx2) redirected to 0x483f670 (strncmp)
+--27767-- REDIR: 0x4c785f0 (libc.so.6:__memcpy_avx_unaligned_erms) redirected to 0x48429f0 (memmove)
+--27767-- REDIR: 0x4b88b40 (libc.so.6:calloc) redirected to 0x483dce0 (calloc)
+--27767-- REDIR: 0x4c75220 (libc.so.6:__strchrnul_avx2) redirected to 0x4843540 (strchrnul)
+--27767-- REDIR: 0x4c75780 (libc.so.6:__strnlen_avx2) redirected to 0x483eee0 (strnlen)
+--27767-- REDIR: 0x4c74ff0 (libc.so.6:__strchr_avx2) redirected to 0x483ebf0 (index)
+--27767-- REDIR: 0x4b87700 (libc.so.6:free) redirected to 0x483c9d0 (free)
+--27767-- REDIR: 0x4c76b20 (libc.so.6:__strcpy_avx2) redirected to 0x483f090 (strcpy)
+--27767-- REDIR: 0x4b8cfd0 (libc.so.6:__GI_strstr) redirected to 0x4843ca0 (__strstr_sse2)
+--27767-- REDIR: 0x4c785e0 (libc.so.6:__memcpy_chk_avx_unaligned_erms) redirected to 0x4843b10 (__memcpy_chk)
+--27767-- REDIR: 0x4b87eb0 (libc.so.6:realloc) redirected to 0x483df30 (realloc)
+--27767-- REDIR: 0x4c76eb0 (libc.so.6:__strncpy_avx2) redirected to 0x483f230 (strncpy)
+--27767-- REDIR: 0x4ba8410 (libc.so.6:__strstr_sse2_unaligned) redirected to 0x4843c20 (strstr)
+--27767-- REDIR: 0x4c78a70 (libc.so.6:__memset_avx2_unaligned_erms) redirected to 0x48428e0 (memset)
+==27767== 
+==27767== HEAP SUMMARY:
+==27767==     in use at exit: 42,457 bytes in 105 blocks
+==27767==   total heap usage: 116 allocs, 11 frees, 124,149 bytes allocated
+==27767== 
+==27767== Searching for pointers to 105 not-freed blocks
+==27767== Checked 214,272 bytes
+==27767== 
+==27767== 4 bytes in 1 blocks are still reachable in loss record 1 of 36
+==27767==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x487C3D1: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48789EF: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 12 bytes in 1 blocks are still reachable in loss record 2 of 36
+==27767==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x4B8C3BE: strdup (strdup.c:42)
+==27767==    by 0x489FAA7: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x489FD9B: _nc_first_db (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A9E1E: _nc_read_entry2 (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A29F5: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A2E04: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48789AC: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 15 bytes in 1 blocks are still reachable in loss record 3 of 36
+==27767==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x4B8C3BE: strdup (strdup.c:42)
+==27767==    by 0x48A2E4F: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48789AC: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 18 bytes in 1 blocks are still reachable in loss record 4 of 36
+==27767==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x48A4542: _nc_tparm_analyze (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A47CB: tparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48781B5: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878B8C: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 24 bytes in 1 blocks are still reachable in loss record 5 of 36
+==27767==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x48A068C: _nc_home_terminfo (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x489FD85: _nc_first_db (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A9E1E: _nc_read_entry2 (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A29F5: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A2E04: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48789AC: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 46 bytes in 1 blocks are still reachable in loss record 6 of 36
+==27767==    at 0x483DFAF: realloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x48A02C7: _nc_doalloc (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A9504: _nc_read_termtype (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A991C: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A9D13: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A9E44: _nc_read_entry2 (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A29F5: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A2E04: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48789AC: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 46 bytes in 1 blocks are still reachable in loss record 7 of 36
+==27767==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x489E18E: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A2E1B: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48789AC: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 48 bytes in 1 blocks are still reachable in loss record 8 of 36
+==27767==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x489FE9B: _nc_first_db (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A9E1E: _nc_read_entry2 (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A29F5: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A2E04: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48789AC: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 66 bytes in 1 blocks are still reachable in loss record 9 of 36
+==27767==    at 0x483DFAF: realloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x48A02C7: _nc_doalloc (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A5C83: tparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48781B5: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878B8C: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 78 bytes in 1 blocks are still reachable in loss record 10 of 36
+==27767==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x489E1FF: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A2E1B: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48789AC: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 93 bytes in 1 blocks are still reachable in loss record 11 of 36
+==27767==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x489FE04: _nc_first_db (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A9E1E: _nc_read_entry2 (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A29F5: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A2E04: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48789AC: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 96 bytes in 1 blocks are still reachable in loss record 12 of 36
+==27767==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x486DFC8: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48841DF: doupdate_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x487A4E7: wrefresh (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x487F564: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4870059: wechochar (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x487472F: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4874B8A: wgetch (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4C8: main (main.cpp:18)
+==27767== 
+==27767== 104 bytes in 1 blocks are still reachable in loss record 13 of 36
+==27767==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x4879095: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4879278: newwin_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x487C798: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48789EF: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 104 bytes in 1 blocks are still reachable in loss record 14 of 36
+==27767==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x4879095: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4879278: newwin_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x487C7BD: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48789EF: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 104 bytes in 1 blocks are still reachable in loss record 15 of 36
+==27767==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x4879095: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4879278: newwin_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x487C95B: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48789EF: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 128 bytes in 1 blocks are still reachable in loss record 16 of 36
+==27767==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x487C39E: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48789EF: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 156 bytes in 1 blocks are still reachable in loss record 17 of 36
+==27767==    at 0x483DFAF: realloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x48A02C7: _nc_doalloc (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A9522: _nc_read_termtype (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A991C: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A9D13: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A9E44: _nc_read_entry2 (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A29F5: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A2E04: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48789AC: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 192 bytes in 1 blocks are still reachable in loss record 18 of 36
+==27767==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x486EAFD: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x486DF28: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48841DF: doupdate_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x487A4E7: wrefresh (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x487F564: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4870059: wechochar (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x487472F: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4874B8A: wgetch (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4C8: main (main.cpp:18)
+==27767== 
+==27767== 192 bytes in 1 blocks are still reachable in loss record 19 of 36
+==27767==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x486EBFF: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x486DF28: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48841DF: doupdate_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x487A4E7: wrefresh (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x487F564: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4870059: wechochar (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x487472F: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4874B8A: wgetch (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4C8: main (main.cpp:18)
+==27767== 
+==27767== 280 bytes in 1 blocks are still reachable in loss record 20 of 36
+==27767==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x48A2DB7: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48789AC: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 384 bytes in 1 blocks are still reachable in loss record 21 of 36
+==27767==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x48790B3: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4879278: newwin_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x487C798: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48789EF: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 384 bytes in 1 blocks are still reachable in loss record 22 of 36
+==27767==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x48790B3: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4879278: newwin_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x487C7BD: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48789EF: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 384 bytes in 1 blocks are still reachable in loss record 23 of 36
+==27767==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x48790B3: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4879278: newwin_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x487C95B: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48789EF: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 496 bytes in 1 blocks are still reachable in loss record 24 of 36
+==27767==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x48A978B: _nc_read_termtype (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A991C: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A9D13: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A9E44: _nc_read_entry2 (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A29F5: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A2E04: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48789AC: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 496 bytes in 1 blocks are still reachable in loss record 25 of 36
+==27767==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x489E2D9: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A2E1B: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48789AC: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 512 bytes in 1 blocks are still reachable in loss record 26 of 36
+==27767==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x487C37F: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48789EF: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 755 bytes in 1 blocks are still reachable in loss record 27 of 36
+==27767==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x48A980B: _nc_read_termtype (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A991C: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A9D13: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A9E44: _nc_read_entry2 (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A29F5: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A2E04: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48789AC: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 1,200 bytes in 1 blocks are still reachable in loss record 28 of 36
+==27767==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x486EAC2: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x486DF28: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48841DF: doupdate_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x487A4E7: wrefresh (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x487F564: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4870059: wechochar (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x487472F: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4874B8A: wgetch (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4C8: main (main.cpp:18)
+==27767== 
+==27767== 1,556 bytes in 1 blocks are still reachable in loss record 29 of 36
+==27767==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x48A8E82: _nc_read_termtype (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A991C: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A9D13: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A9E44: _nc_read_entry2 (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A29F5: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A2E04: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48789AC: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 1,624 bytes in 1 blocks are still reachable in loss record 30 of 36
+==27767==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x48A324E: new_prescr (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x4878E4B: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 2,236 bytes in 1 blocks are still reachable in loss record 31 of 36
+==27767==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x487C49F: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48789EF: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 3,792 bytes in 1 blocks are still reachable in loss record 32 of 36
+==27767==    at 0x483DFAF: realloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x48A02C7: _nc_doalloc (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A9540: _nc_read_termtype (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A991C: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A9D13: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A9E44: _nc_read_entry2 (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A29F5: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A2E04: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48789AC: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 3,792 bytes in 1 blocks are still reachable in loss record 33 of 36
+==27767==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x489E1AF: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48A2E1B: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.2)
+==27767==    by 0x48789AC: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 7,680 bytes in 24 blocks are still reachable in loss record 34 of 36
+==27767==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x48792AC: newwin_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x487C798: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48789EF: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 7,680 bytes in 24 blocks are still reachable in loss record 35 of 36
+==27767==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x48792AC: newwin_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x487C7BD: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48789EF: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== 7,680 bytes in 24 blocks are still reachable in loss record 36 of 36
+==27767==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27767==    by 0x48792AC: newwin_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x487C95B: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48789EF: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x4878E5C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x48752CF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.2)
+==27767==    by 0x10A4B9: main (main.cpp:9)
+==27767== 
+==27767== LEAK SUMMARY:
+==27767==    definitely lost: 0 bytes in 0 blocks
+==27767==    indirectly lost: 0 bytes in 0 blocks
+==27767==      possibly lost: 0 bytes in 0 blocks
+==27767==    still reachable: 42,457 bytes in 105 blocks
+==27767==         suppressed: 0 bytes in 0 blocks
+==27767== 
+==27767== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
