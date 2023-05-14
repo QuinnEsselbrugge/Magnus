@@ -1,8 +1,8 @@
 #ifndef CURSE_DRIVER_H_
 #define CURSE_DRIVER_H_
 
-#include "HardDefines.h"
-#include "CurseDriverErrors.h"
+#include "../Defines/HardDefines.h"
+#include "../Defines/CurseDriverErrors.h"
 
 #include <iostream>
 #include <menu.h>

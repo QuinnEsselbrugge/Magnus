@@ -83,8 +83,8 @@ CurseDriverErrors CurseDriver::CreateMenu(int handle, std::string choices[MAX_LI
 CurseDriverErrors CurseDriver::DisplayMenu(int handle)
 {
     Menu menu = m_menus[GetMenu(handle)];
-    
-    if (menu.handle == 0)
+
+    if (menu.handle < 0 && menu.handle > MAX_NR_MENUS)
     {
         return CurseDriverErrors::DRIVER_INTERNAL_OPERATION_FAILURE_CURSE;
     }
@@ -187,17 +187,6 @@ std::string CurseDriver::ShortenString(std::string str, int amount)
             return str;
         }
     }
-    // for (long unsigned int i = str.length(); i > 0; i--)
-    // {
-    //     total += wcwidth(str[i]);
-    //     std::cout << wcwidth(str[i + 1]) << "\n";
-    //     str.pop_back();
-
-    //     if (total >= amount - 1)
-    //     {
-    //         return str;
-    //     }
-    // }
     
     return str;
 }

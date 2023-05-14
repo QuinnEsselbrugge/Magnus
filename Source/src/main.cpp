@@ -1,35 +1,49 @@
+#include "../inc/Drivers/CurseDriver.h"
+#include "../inc/Drivers/WidgetDriver.h"
+#include "../inc/Utilities/FileUtility.h"
+
 #include <stdlib.h>
 #include <iostream>
-#include "../inc/CurseDriver.h"
-#include "../inc/WidgetDriver.h"
 
 CurseDriver curseDriver = CurseDriver();
-WidgetDriver widgetDriver = WidgetDriver(curseDriver);
+WidgetDriver *widgetDriver = new WidgetDriver(curseDriver);
+FileUtility fileUtility = FileUtility();
 
 int main()
 { 
-    std::string choices[MAX_LIST_ITEMS] = {"Yeett", "yote", "Yet", "AAAA", "ASDASDASDASDASD" , "asdasdsadsahbasdbhjadsabhjssdabhjdsabhjdasasd", "afiouihdfgyudhf7ewyr47r9ewqw4u83y574we", "LOL"};
+    /* 
+        TMP TESTING CODE, LMAO
+    */  
 
-    Sizing sizing = {10, 10, 0, 0};
-    
-    Widget fileList;
-    fileList.type = M_LIST;
-    fileList.sizing = sizing;
-    std::copy(choices, choices + 8, fileList.choices);
-    fileList.nrChoices = 8;
+   std::vector<std::string> names = fileUtility.GetFileNamesFromDirectory("/home/quinn/Music/asd");
 
-    std::cout << "HERE" << "\n";
-    // todo figure out why the menu is not displaying thru the widget driver...
+   for (long unsigned int i = 0; i < names.size(); i++)
+   {
+       std::cout << names[i] << "\n";
+   }
 
-    widgetDriver.RegisterWidget(fileList);
+    // std::string choices[MAX_LIST_ITEMS] = {"Yeett", "yote", "Yet", "AAAA", "ASDASDASDASDASD" , "asdasdsadsahbasdbhjadsabhjssdabhjdsabhjdasasd", "afiouihdfgyudhf7ewyr47r9ewqw4u83y574we", "LOL"};
+    // int row, col;
+    // getmaxyx(stdscr, row, col);
+
+    // Sizing sizing = {row, 20, 0, 0};
     
-    // int colors[MAX_COLORS_MENU] = {COLOR_BLACK, COLOR_WHITE};
-    // curseDriver.CreateMenu(1, choices, 8, sizing, colors);
+    // Widget fileList;
+    // fileList.type = M_LIST;
+    // fileList.sizing = sizing;
+    // std::copy(choices, choices + 8, fileList.choices);
+    // fileList.nrChoices = 8;
+
+    // widgetDriver->RegisterWidget(fileList);
     
-    int ch;
-    while((ch = getch()) != KEY_F(1))
-    {
-        widgetDriver.DisplayWidgets();
-        // curseDriver.DisplayMenu(1);
-    }
+    // int ch;
+    // while((ch = getch()) != KEY_F(1))
+    // {
+    //     widgetDriver->DisplayWidgets();
+    // }
+
+
+    /* 
+        TMP TESTING CODE, LMAO
+    */  
 }

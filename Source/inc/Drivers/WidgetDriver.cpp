@@ -2,21 +2,28 @@
 
 
 WidgetDriver::WidgetDriver(CurseDriver curseDriver) : m_curseDriver(curseDriver)
-{}
+{
+}
 
 WidgetDriver::~WidgetDriver()
-{}
+{
+    DestroyWidgets();
+}
 
 WidgetErrors WidgetDriver::RegisterWidget(Widget widget)
 {
-    m_widgets[m_registeredWidgets] = widget;
-    widget.handle = m_registeredWidgets;
+    // Widget *newWidget = (Widget *) calloc(1, sizeof(widget));
+
+    Widget *newWidget = new Widget;
+    *newWidget = widget;
+    
+    newWidget->handle = m_registeredWidgets;
 
     switch(widget.type)
     {
         case M_LIST:
         {
-            // m_curseDriver.CreateMenu(widget.handle, widget.choices, widget.nrChoices, widget.sizing);
+            m_curseDriver.CreateMenu(newWidget->handle, newWidget->choices, newWidget->nrChoices, newWidget->sizing);
         }
 
         case M_PANEL:
@@ -35,6 +42,7 @@ WidgetErrors WidgetDriver::RegisterWidget(Widget widget)
         }
     }
 
+    m_widgets[m_registeredWidgets] = *newWidget;
     m_registeredWidgets++;
 
     return WidgetErrors::NO_ERROR_WIDGET;
@@ -49,7 +57,6 @@ WidgetErrors WidgetDriver::DisplayWidgets()
         {
             case M_LIST:
             {
-                std::cout << "HERE" << "\n";
                 m_curseDriver.DisplayMenu(m_widgets[i].handle);
             }
 
@@ -72,4 +79,12 @@ WidgetErrors WidgetDriver::DisplayWidgets()
     }
 
     return WidgetErrors::NO_ERROR_WIDGET;
+}
+
+void WidgetDriver::DestroyWidgets()
+{
+    for (int i = 0; i< MAX_NR_WIDGETS; i++)
+    {
+        delete &m_widgets[i];
+    }
 }

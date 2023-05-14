@@ -2,8 +2,10 @@
 #define WIDGET_DRIVER_H_
 
 #include "CurseDriver.h"
-#include "WidgetErrors.h"
-#include "HardDefines.h"
+#include "../Defines/WidgetErrors.h"
+#include "../Defines/HardDefines.h"
+
+#include <string.h>
 
 enum WidgetType
 {
@@ -38,6 +40,8 @@ class WidgetDriver
         CurseDriver m_curseDriver;
 
         int m_registeredWidgets = 0;
+        
+        void DestroyWidgets();
         
 
 
