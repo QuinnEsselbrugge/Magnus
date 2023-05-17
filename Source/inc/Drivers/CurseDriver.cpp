@@ -19,8 +19,6 @@ CurseDriver::CurseDriver()
 }
 
 
-// todo: fix the freeing of memory not executing properly see valgrind
-
 CurseDriver::~CurseDriver()
 {
     DestroyMenus();
@@ -33,7 +31,7 @@ CurseDriver::~CurseDriver()
     Creationists
 */
 
-CurseDriverErrors CurseDriver::CreateMenu(int handle, std::string choices[MAX_LIST_ITEMS], int nrChoices, Sizing sizings)
+CurseDriverErrors CurseDriver::CreateMenu(int handle, std::vector<std::string> choices, int nrChoices, Sizing sizings)
 {
     Menu *menu = (Menu *) calloc(1, sizeof(Menu));
 
@@ -55,23 +53,25 @@ CurseDriverErrors CurseDriver::CreateMenu(int handle, std::string choices[MAX_LI
     // Create menu
     menu->curseMenu = new_menu((ITEM **)menu->curseItems);
 
+    
     // Create window
     menu->curseWindow = newwin(sizings.height, sizings.width, sizings.startY, sizings.startX);
     keypad(menu->curseWindow, TRUE);
 
-    init_pair(handle, COLOR_BLACK, COLOR_WHITE);
+    set_menu_mark(menu->curseMenu, " * ");
 
-    std::copy(choices, choices + nrChoices, menu->choices);
+    menu->choices = choices;
     menu->nrItems = nrChoices;
     menu->sizing = sizings;
     menu->handle = handle;
+    menu->selectedIndex = 0;
 
     set_menu_win(menu->curseMenu, menu->curseWindow);
     post_menu(menu->curseMenu);
 
     m_menus[0] = *menu;
 
-    DisplayMenu(handle);
+    DisplayMenu(handle, false);
 
     return CurseDriverErrors::NO_ERROR_CURSE;
 }
@@ -80,13 +80,18 @@ CurseDriverErrors CurseDriver::CreateMenu(int handle, std::string choices[MAX_LI
     Displayers
 */
 
-CurseDriverErrors CurseDriver::DisplayMenu(int handle)
+CurseDriverErrors CurseDriver::DisplayMenu(int handle, bool checkInteraction)
 {
-    Menu menu = m_menus[GetMenu(handle)];
+    Menu& menu = m_menus[GetMenu(handle)];
 
     if (menu.handle < 0 && menu.handle > MAX_NR_MENUS)
     {
         return CurseDriverErrors::DRIVER_INTERNAL_OPERATION_FAILURE_CURSE;
+    }
+
+    if (checkInteraction == true)
+    {
+        CheckMenuInteraction(handle);
     }
 
     // tmp pseudo
@@ -100,14 +105,17 @@ CurseDriverErrors CurseDriver::DisplayMenu(int handle)
         std::string strOut = menu.choices[i];
         int stringWidth = GetStringWidth(menu.choices[i]);
 
-        if (stringWidth > menu.sizing.width)
+        if (stringWidth + BASH_STR_WIDTH_BUFFER > menu.sizing.width)
         {       
             strOut = StringElipsis(strOut, menu.sizing.width);
         }
 
-        mvwprintw(menu.curseWindow, y, x, "%s", strOut.c_str());
+        bool highlight = menu.selectedIndex == i ? true : false;
+        PrintString(strOut, menu.curseWindow, y, x, highlight);
 
         y++;
+
+        wattroff(menu.curseWindow, A_REVERSE); 
     }
 
     wrefresh(menu.curseWindow);
@@ -117,12 +125,56 @@ CurseDriverErrors CurseDriver::DisplayMenu(int handle)
 
 
 /*!
+    Interactions
+*/
+
+CurseDriverErrors CurseDriver::CheckMenuInteraction(int handle)
+{
+    Menu& menu = m_menus[GetMenu(handle)];
+    int c = getch();
+
+    switch(c)
+    {
+        case KEY_DOWN:
+                menu.selectedIndex = menu.selectedIndex + 1;
+
+                if (menu.selectedIndex >= menu.nrItems)
+                {
+                    menu.selectedIndex = 0;
+                }
+        break;
+
+        case KEY_UP:
+                menu.selectedIndex--;
+
+                if (menu.selectedIndex <= -1)
+                {
+                    menu.selectedIndex = menu.nrItems - 1;
+                }
+        break;
+
+        case 10:
+            // std::cout << menu.choices[menu.selectedIndex] << "\n\n\n\r\n";
+            // wmove(menu.curseWindow, 20, 0);
+            // wclrtoeol(menu.curseWindow);
+            // std::cout<< item_name(current_item(menu.curseMenu)) << "\n";
+            // mvprintw(20, 0, "Item selected is : %s", 
+            //                 item_name(current_item(menu.curseMenu)));
+            // pos_menu_cursor(menu.curseMenu);
+        break;
+    }
+
+    return CurseDriverErrors::CREATION_FAILED_CURSE;
+}
+
+
+/*!
     Helpers
 */
 
-CurseDriverErrors CurseDriver::InsertItemChoices(ITEM **curseItems, std::string *choices, int nrChoices)
+CurseDriverErrors CurseDriver::InsertItemChoices(ITEM **curseItems, std::vector<std::string> choices, int nrChoices)
 {   
-    if (curseItems == nullptr && choices == nullptr && nrChoices <= 0)
+    if (curseItems == nullptr && nrChoices <= 0)
     {
         return CurseDriverErrors::DRIVER_INTERNAL_OPERATION_FAILURE_CURSE;
     }
@@ -133,6 +185,19 @@ CurseDriverErrors CurseDriver::InsertItemChoices(ITEM **curseItems, std::string 
     }
 
     return CurseDriverErrors::NO_ERROR_CURSE;
+}
+
+void CurseDriver::PrintString(std::string string, WINDOW *curseWindow, int y, int x, bool highlight)
+{
+    if (highlight == true)
+    {
+        wattron(curseWindow, A_REVERSE);
+        mvwprintw(curseWindow, y, x, "%s", string.c_str());
+        wattroff(curseWindow, A_REVERSE);
+    } else
+    {
+        mvwprintw(curseWindow, y, x, "%s", string.c_str());
+    }
 }
 
 std::string CurseDriver::StringElipsis(std::string str, int cutoffSize)
@@ -148,7 +213,7 @@ std::string CurseDriver::StringElipsis(std::string str, int cutoffSize)
     diff = diff + elipsisWidth;
 
     // buffer of ~3 pixels. blame bash fuckiness
-    strOut = ShortenString(str, diff + 3);
+    strOut = ShortenString(str, diff + BASH_STR_WIDTH_BUFFER);
 
     strOut.append("...");
 

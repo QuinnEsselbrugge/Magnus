@@ -12,8 +12,6 @@ WidgetDriver::~WidgetDriver()
 
 WidgetErrors WidgetDriver::RegisterWidget(Widget widget)
 {
-    // Widget *newWidget = (Widget *) calloc(1, sizeof(widget));
-
     Widget *newWidget = new Widget;
     *newWidget = widget;
     
@@ -57,7 +55,7 @@ WidgetErrors WidgetDriver::DisplayWidgets()
         {
             case M_LIST:
             {
-                m_curseDriver.DisplayMenu(m_widgets[i].handle);
+                m_curseDriver.DisplayMenu(m_widgets[i].handle, true);
             }
 
             case M_PANEL:
@@ -80,6 +78,40 @@ WidgetErrors WidgetDriver::DisplayWidgets()
 
     return WidgetErrors::NO_ERROR_WIDGET;
 }
+
+
+WidgetErrors WidgetDriver::CheckWidgetInteraction()
+{
+    for (int i = 0; i < MAX_NR_WIDGETS; i++)
+    {
+        switch (m_widgets[i].type)
+        {
+            case M_LIST:
+            {
+                m_curseDriver.CheckMenuInteraction(m_widgets[i].handle);
+            }
+
+            case M_PANEL:
+            {
+
+            }
+
+            case M_TEXT:
+            {
+
+            }
+
+            case M_TEXTAREA:
+            {
+
+            }
+        }
+    }
+
+
+    return WidgetErrors::NO_ERROR_WIDGET;
+}
+
 
 void WidgetDriver::DestroyWidgets()
 {

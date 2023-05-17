@@ -6,6 +6,7 @@
 #include "../Defines/HardDefines.h"
 
 #include <string.h>
+#include <vector>
 
 enum WidgetType
 {
@@ -20,7 +21,7 @@ struct Widget
     WidgetType type;
     Sizing sizing;
     int handle;
-    std::string choices[MAX_LIST_ITEMS] = {};
+    std::vector<std::string> choices;
     int nrChoices = 0;
 };
 
@@ -32,7 +33,10 @@ class WidgetDriver
         ~WidgetDriver();
 
         WidgetErrors RegisterWidget(Widget widget);
+        
         WidgetErrors DisplayWidgets();
+
+        WidgetErrors CheckWidgetInteraction();
 
     private:
 

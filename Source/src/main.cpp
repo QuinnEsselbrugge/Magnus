@@ -15,33 +15,29 @@ int main()
         TMP TESTING CODE, LMAO
     */  
 
+   // todo: convert string array to vector, in cursedriver and widget driver :(
+
    std::vector<std::string> names = fileUtility.GetFileNamesFromDirectory("/home/quinn/Music/asd");
 
-   for (long unsigned int i = 0; i < names.size(); i++)
-   {
-       std::cout << names[i] << "\n";
-   }
+    int row, col;
+    getmaxyx(stdscr, row, col);
 
-    // std::string choices[MAX_LIST_ITEMS] = {"Yeett", "yote", "Yet", "AAAA", "ASDASDASDASDASD" , "asdasdsadsahbasdbhjadsabhjssdabhjdsabhjdasasd", "afiouihdfgyudhf7ewyr47r9ewqw4u83y574we", "LOL"};
-    // int row, col;
-    // getmaxyx(stdscr, row, col);
-
-    // Sizing sizing = {row, 20, 0, 0};
+    Sizing sizing = {row, 25, 0, 0};
     
-    // Widget fileList;
-    // fileList.type = M_LIST;
-    // fileList.sizing = sizing;
-    // std::copy(choices, choices + 8, fileList.choices);
-    // fileList.nrChoices = 8;
+    Widget fileList;
+    fileList.type = M_LIST;
+    fileList.sizing = sizing;
+    fileList.choices = names;
+    fileList.nrChoices = names.size();
 
-    // widgetDriver->RegisterWidget(fileList);
+    widgetDriver->RegisterWidget(fileList);
     
     // int ch;
-    // while((ch = getch()) != KEY_F(1))
-    // {
-    //     widgetDriver->DisplayWidgets();
-    // }
-
+    //ch = getch()) != KEY_F(1)
+    while(1)
+    {
+        widgetDriver->DisplayWidgets();
+    }
 
     /* 
         TMP TESTING CODE, LMAO

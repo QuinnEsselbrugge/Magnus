@@ -5,6 +5,7 @@
 #include "../Defines/CurseDriverErrors.h"
 
 #include <iostream>
+#include <vector>
 #include <menu.h>
 #include <curses.h>
 #include <panel.h>
@@ -23,9 +24,11 @@ class CurseDriver
         CurseDriver();
         ~CurseDriver();
 
-        CurseDriverErrors CreateMenu(int handle, std::string choices[MAX_LIST_ITEMS], int nrChoices, Sizing sizings);
+        CurseDriverErrors CreateMenu(int handle, std::vector<std::string> choices, int nrChoices, Sizing sizings);
         
-        CurseDriverErrors DisplayMenu(int handle);
+        CurseDriverErrors DisplayMenu(int handle, bool checkInteraction = true);
+
+        CurseDriverErrors CheckMenuInteraction(int handle);
         
     private:
 
@@ -34,7 +37,8 @@ class CurseDriver
             int handle;
             int nrItems;
             int colors[MAX_COLORS_MENU];
-            std::string choices[MAX_LIST_ITEMS];
+            int selectedIndex;
+            std::vector<std::string> choices;
             WINDOW *curseWindow;
             MENU *curseMenu;
             ITEM **curseItems;
@@ -43,8 +47,10 @@ class CurseDriver
 
         Menu m_menus[MAX_NR_MENUS];
 
-        CurseDriverErrors InsertItemChoices(ITEM **curseItems, std::string *choices, int nrChoices);
-        
+        CurseDriverErrors InsertItemChoices(ITEM **curseItems, std::vector<std::string> choices, int nrChoices);
+    
+        void PrintString(std::string string, WINDOW *curseWindow, int y, int x, bool highlight);
+
         int GetStringWidth(std::string str);
         std::string StringElipsis(std::string str, int cutoffSize);
         std::string ShortenString(std::string str, int amount);
