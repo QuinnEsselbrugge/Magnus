@@ -5,9 +5,9 @@
 #include <stdlib.h>
 #include <iostream>
 
-CurseDriver curseDriver = CurseDriver();
-WidgetDriver *widgetDriver = new WidgetDriver(curseDriver);
-FileUtility fileUtility = FileUtility();
+CurseDriver *curseDriver = new CurseDriver();
+WidgetDriver *widgetDriver = new WidgetDriver(*curseDriver);
+FileUtility *fileUtility = new FileUtility();
 
 int main()
 { 
@@ -15,9 +15,7 @@ int main()
         TMP TESTING CODE, LMAO
     */  
 
-   // todo: convert string array to vector, in cursedriver and widget driver :(
-
-   std::vector<std::string> names = fileUtility.GetFileNamesFromDirectory("/home/quinn/Music/asd");
+   std::vector<std::string> names = fileUtility->GetFileNamesFromDirectory("/home/quinn/Music/asd");
 
     int row, col;
     getmaxyx(stdscr, row, col);

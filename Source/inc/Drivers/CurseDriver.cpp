@@ -9,6 +9,8 @@ CurseDriver::CurseDriver()
     // Start stdscr
     initscr();
 
+    curs_set(0);
+
     // Start color driver
     start_color();
 
@@ -64,6 +66,7 @@ CurseDriverErrors CurseDriver::CreateMenu(int handle, std::vector<std::string> c
     menu->nrItems = nrChoices;
     menu->sizing = sizings;
     menu->handle = handle;
+    menu->menuResult = (std::string *) calloc(1, FILE_CHARACTER_LIMIT);
     menu->selectedIndex = 0;
 
     set_menu_win(menu->curseMenu, menu->curseWindow);
@@ -114,8 +117,6 @@ CurseDriverErrors CurseDriver::DisplayMenu(int handle, bool checkInteraction)
         PrintString(strOut, menu.curseWindow, y, x, highlight);
 
         y++;
-
-        wattroff(menu.curseWindow, A_REVERSE); 
     }
 
     wrefresh(menu.curseWindow);
@@ -152,9 +153,12 @@ CurseDriverErrors CurseDriver::CheckMenuInteraction(int handle)
                     menu.selectedIndex = menu.nrItems - 1;
                 }
         break;
-
+ 
         case 10:
-            // std::cout << menu.choices[menu.selectedIndex] << "\n\n\n\r\n";
+            std::string *ptr = menu.menuResult;
+            *ptr = menu.choices[menu.selectedIndex];
+
+            // std::cout << "                     " <<  *menu.menuResult << "\n\n\n\r\n";
             // wmove(menu.curseWindow, 20, 0);
             // wclrtoeol(menu.curseWindow);
             // std::cout<< item_name(current_item(menu.curseMenu)) << "\n";
@@ -291,5 +295,8 @@ void CurseDriver::DestroyMenus()
 
         unpost_menu(m_menus[i].curseMenu);
         free_menu(m_menus[i].curseMenu);
+
+        free(m_menus[i].menuResult);
+        m_menus[i].menuResult = nullptr;
     }
 }

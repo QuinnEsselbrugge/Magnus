@@ -38,6 +38,7 @@ class CurseDriver
             int nrItems;
             int colors[MAX_COLORS_MENU];
             int selectedIndex;
+            std::string *menuResult;
             std::vector<std::string> choices;
             WINDOW *curseWindow;
             MENU *curseMenu;
