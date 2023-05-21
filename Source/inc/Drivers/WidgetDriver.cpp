@@ -70,7 +70,7 @@ WidgetErrors WidgetDriver::DisplayWidgets()
 
             case M_TEXTAREA:
             {
-
+                
             }
         }
 

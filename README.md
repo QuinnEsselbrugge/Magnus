@@ -1,10 +1,11 @@
 # Magnus TODO
 
-* Figure out how to work in the text editor logic into the cursedriver logic..
+* Figure out how to work in the text editor logic into the cursedriver logic.. -> BUSY
 * Attach full path names to the menu object for loading of
     > See File Util for expansion of this
 *  Proper color scheming for everything
 * Rethink structure of the use of utilities
+* Make it possible to set widgets to max width and max height of terminal scr
 
 ## Getting started
 

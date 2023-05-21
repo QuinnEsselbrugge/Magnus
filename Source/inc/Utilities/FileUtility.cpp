@@ -4,8 +4,6 @@ FileUtility::FileUtility(){}
 
 FileUtility::~FileUtility(){}
 
-
-
 std::vector<std::string> FileUtility::GetFileNamesFromDirectory(std::string directoryPath)
 {
     std::vector<std::string> names;
@@ -22,13 +20,34 @@ std::vector<std::string> FileUtility::GetFileNamesFromDirectory(std::string dire
 
     while ((directory = readdir(dirInterface)) != NULL)
     {
-        // tmp illegal character mapping see .h
-        names.push_back(directory->d_name);
+        names.push_back(directoryPath + directory->d_name);
     }
 
-    std::vector<std::string> filtered = RemoveIllegalNames(names);
-
     closedir(dirInterface);
+
+    return names;
+}
+
+std::vector<std::string> FileUtility::GetShortFileNames(std::vector<std::string> names)
+{
+    std::vector<std::string> filtered;
+
+    if (names.size() <= 0)
+    {
+        return names;
+    }
+
+    for (long unsigned int i = 0; i < names.size(); i++)
+    {
+
+        int res = names[i].find_last_of("/");
+
+        std::string out = names[i].substr(res + 1, names[i].size() - res);
+
+        filtered.push_back(out);
+    }
+
+    filtered = RemoveIllegalNames(filtered);
 
     return filtered;
 }
@@ -37,7 +56,7 @@ std::vector<std::string> FileUtility::GetFileNamesFromDirectory(std::string dire
 std::vector<std::string> FileUtility::RemoveIllegalNames(std::vector<std::string> names)
 {
     std::vector<std::string> filtered;
-    // long unsigned int illegalIndex = 0;
+
     bool approved = true;
     
     for (long unsigned int i = 0; i < names.size(); i++)
@@ -56,13 +75,6 @@ std::vector<std::string> FileUtility::RemoveIllegalNames(std::vector<std::string
         {
             filtered.push_back(names[i]);
         }
-
-        // illegalIndex++;
-
-        // if (illegalIndex >= m_illegals.size())
-        // {
-        //     illegalIndex = 0;
-        // }
     }
 
     return filtered;
