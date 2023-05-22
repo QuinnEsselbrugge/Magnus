@@ -25,8 +25,10 @@ class CurseDriver
         ~CurseDriver();
 
         CurseDriverErrors CreateMenu(int handle, std::vector<std::string> choices, int nrChoices, Sizing sizings);
+        CurseDriverErrors CreateTextArea(int handle, std::string data, Sizing sizings);
         
         CurseDriverErrors DisplayMenu(int handle, bool checkInteraction = true);
+        CurseDriverErrors DisplayTextArea(int handle, bool checkInteraction = true);
 
         CurseDriverErrors CheckMenuInteraction(int handle);
         
@@ -46,7 +48,19 @@ class CurseDriver
             Sizing sizing;
         };
 
+        struct TextArea
+        {
+            int handle;
+            std::string data;
+            WINDOW * curseWindow;
+            Sizing sizing;
+        };
+
         Menu m_menus[MAX_NR_MENUS];
+        TextArea m_textAreas[MAX_NR_TEXT_AREAS];
+
+        int m_registeredMenus = 0;
+        int m_registeredTextAreas = 0;
 
         CurseDriverErrors InsertItemChoices(ITEM **curseItems, std::vector<std::string> choices, int nrChoices);
     
@@ -57,8 +71,11 @@ class CurseDriver
         std::string ShortenString(std::string str, int amount);
         
         int GetMenu(int handle);
+        int GetTextArea(int handle);
 
         void DestroyMenus();
+        void DestroyTextAreas();
+
 };
 
 

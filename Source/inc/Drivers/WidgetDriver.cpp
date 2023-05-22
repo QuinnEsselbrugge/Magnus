@@ -22,20 +22,27 @@ WidgetErrors WidgetDriver::RegisterWidget(Widget widget)
         case M_LIST:
         {
             m_curseDriver.CreateMenu(newWidget->handle, newWidget->choices, newWidget->nrChoices, newWidget->sizing);
+
+            break;
         }
 
         case M_PANEL:
         {
+            break;
 
         }
 
         case M_TEXT:
         {
+            break;
 
         }
 
         case M_TEXTAREA:
         {
+            m_curseDriver.CreateTextArea(newWidget->handle, newWidget->data, newWidget->sizing);
+
+            break;
 
         }
     }
@@ -56,21 +63,28 @@ WidgetErrors WidgetDriver::DisplayWidgets()
             case M_LIST:
             {
                 m_curseDriver.DisplayMenu(m_widgets[i].handle, true);
+
+                break;
+
             }
 
             case M_PANEL:
             {
+                break;
 
             }
 
             case M_TEXT:
             {
+                break;
 
             }
 
             case M_TEXTAREA:
             {
-                
+                m_curseDriver.DisplayTextArea(m_widgets[i].handle, true);
+
+                break;
             }
         }
 

@@ -79,3 +79,25 @@ std::vector<std::string> FileUtility::RemoveIllegalNames(std::vector<std::string
 
     return filtered;
 }
+
+
+std::string FileUtility::GetFileContents(std::string path)
+{
+    if (path.size() <= 0)
+    {
+        return path;
+    }
+
+      std::ifstream ifs(path);
+      std::string content
+      ( 
+          (
+              std::istreambuf_iterator<char>(ifs) 
+          ),
+          (
+              std::istreambuf_iterator<char>()    
+          ) 
+        );
+
+        return content;
+}

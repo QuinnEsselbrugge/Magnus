@@ -11,6 +11,7 @@
 
 // Menus
 #define MAX_NR_MENUS 20
+#define MAX_NR_TEXT_AREAS 30
 #define MAX_COLORS_MENU 2
 
 #endif

@@ -24,6 +24,7 @@ CurseDriver::CurseDriver()
 CurseDriver::~CurseDriver()
 {
     DestroyMenus();
+    DestroyTextAreas();
 
     endwin();
 }
@@ -55,7 +56,6 @@ CurseDriverErrors CurseDriver::CreateMenu(int handle, std::vector<std::string> c
     // Create menu
     menu->curseMenu = new_menu((ITEM **)menu->curseItems);
 
-    
     // Create window
     menu->curseWindow = newwin(sizings.height, sizings.width, sizings.startY, sizings.startX);
     keypad(menu->curseWindow, TRUE);
@@ -72,9 +72,29 @@ CurseDriverErrors CurseDriver::CreateMenu(int handle, std::vector<std::string> c
     set_menu_win(menu->curseMenu, menu->curseWindow);
     post_menu(menu->curseMenu);
 
-    m_menus[0] = *menu;
+    m_menus[m_registeredMenus++] = *menu;
 
     DisplayMenu(handle, false);
+
+    return CurseDriverErrors::NO_ERROR_CURSE;
+}
+
+CurseDriverErrors CurseDriver::CreateTextArea(int handle, std::string data, Sizing sizings)
+{
+    TextArea *textArea = (TextArea *) calloc(1, sizeof(TextArea));
+
+    if (textArea == nullptr)
+    {
+        return CurseDriverErrors::DRIVER_INTERNAL_OPERATION_FAILURE_CURSE;
+    }
+    textArea->handle = handle;
+    textArea->data = data;
+    textArea->curseWindow = newwin(sizings.height, sizings.width, sizings.startY, sizings.startX);
+
+    // tmp    
+    m_textAreas[m_registeredTextAreas++] = *textArea;
+
+    DisplayTextArea(handle, false);
 
     return CurseDriverErrors::NO_ERROR_CURSE;
 }
@@ -83,6 +103,7 @@ CurseDriverErrors CurseDriver::CreateMenu(int handle, std::vector<std::string> c
     Displayers
 */
 
+//todo : subdivide and improve
 CurseDriverErrors CurseDriver::DisplayMenu(int handle, bool checkInteraction)
 {
     Menu& menu = m_menus[GetMenu(handle)];
@@ -124,6 +145,37 @@ CurseDriverErrors CurseDriver::DisplayMenu(int handle, bool checkInteraction)
     return CurseDriverErrors::NO_ERROR_CURSE;
 }
 
+CurseDriverErrors CurseDriver::DisplayTextArea(int handle, bool checkInteraction)
+{
+    TextArea& textArea = m_textAreas[GetTextArea(handle)];
+
+    if (textArea.handle < 0 && textArea.handle > MAX_NR_TEXT_AREAS)
+    {
+        return CurseDriverErrors::DRIVER_INTERNAL_OPERATION_FAILURE_CURSE;
+    }
+
+    box(textArea.curseWindow, 0, 0);
+
+    std::string append;
+    for (long unsigned int i = 0; i < textArea.data.size(); i++)
+    {
+        if (textArea.data[i] == '\n')
+        {
+            PrintString(append, textArea.curseWindow, 2, 2, false);
+            append.clear();
+        }
+
+        append.push_back(textArea.data[i]);
+    }
+
+    // PrintString(textArea.data, textArea.curseWindow, 2, 2, false);
+
+    wrefresh(textArea.curseWindow);
+
+    checkInteraction = checkInteraction;
+
+    return CurseDriverErrors::NO_ERROR_CURSE;
+}
 
 /*!
     Interactions
@@ -278,6 +330,19 @@ int CurseDriver::GetMenu(int handle)
     return -1;
 }
 
+int CurseDriver::GetTextArea(int handle)
+{
+    for (int i = 0; i < MAX_NR_TEXT_AREAS; i++)
+    {
+        if (m_textAreas[i].handle == handle)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
 
 
 /*!
@@ -298,5 +363,13 @@ void CurseDriver::DestroyMenus()
 
         free(m_menus[i].menuResult);
         m_menus[i].menuResult = nullptr;
+    }
+}
+
+void CurseDriver::DestroyTextAreas()
+{
+    for (int i = 0; i < m_registeredTextAreas; i++)
+    {
+        delete &m_textAreas[i];
     }
 }

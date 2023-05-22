@@ -4,6 +4,7 @@
 #include <iostream>
 #include <dirent.h> 
 #include <vector>
+#include <fstream>
 #include <string>
 #include <string.h>
 
@@ -24,6 +25,7 @@ class FileUtility
 
         std::vector<std::string> GetFileNamesFromDirectory(std::string directoryPath);
         std::vector<std::string> GetShortFileNames(std::vector<std::string> names);
+        std::string GetFileContents(std::string path);
 
     private:
         std::vector<std::string> m_illegals = {".", ".."};

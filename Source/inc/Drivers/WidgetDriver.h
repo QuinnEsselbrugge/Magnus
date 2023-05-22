@@ -22,6 +22,7 @@ struct Widget
     Sizing sizing;
     int handle;
     std::vector<std::string> choices;
+    std::string data;
     int nrChoices = 0;
 };
 
