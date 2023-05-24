@@ -25,7 +25,7 @@ class CurseDriver
         ~CurseDriver();
 
         CurseDriverErrors CreateMenu(int handle, std::vector<std::string> choices, int nrChoices, Sizing sizings);
-        CurseDriverErrors CreateTextArea(int handle, std::string data, Sizing sizings);
+        CurseDriverErrors CreateTextArea(int handle, std::string data, bool toggleLines, Sizing sizings);
         
         CurseDriverErrors DisplayMenu(int handle, bool checkInteraction = true);
         CurseDriverErrors DisplayTextArea(int handle, bool checkInteraction = true);
@@ -52,6 +52,7 @@ class CurseDriver
         {
             int handle;
             std::string data;
+            bool toggleLines;
             WINDOW * curseWindow;
             Sizing sizing;
         };

@@ -79,7 +79,7 @@ CurseDriverErrors CurseDriver::CreateMenu(int handle, std::vector<std::string> c
     return CurseDriverErrors::NO_ERROR_CURSE;
 }
 
-CurseDriverErrors CurseDriver::CreateTextArea(int handle, std::string data, Sizing sizings)
+CurseDriverErrors CurseDriver::CreateTextArea(int handle, std::string data, bool toggleLines, Sizing sizings)
 {
     TextArea *textArea = (TextArea *) calloc(1, sizeof(TextArea));
 
@@ -89,6 +89,8 @@ CurseDriverErrors CurseDriver::CreateTextArea(int handle, std::string data, Sizi
     }
     textArea->handle = handle;
     textArea->data = data;
+    textArea->sizing = sizings;
+    textArea->toggleLines = toggleLines;
     textArea->curseWindow = newwin(sizings.height, sizings.width, sizings.startY, sizings.startX);
 
     // tmp    
@@ -157,18 +159,30 @@ CurseDriverErrors CurseDriver::DisplayTextArea(int handle, bool checkInteraction
     box(textArea.curseWindow, 0, 0);
 
     std::string append;
+    int x = 4;
+    int y = 1;
+    
     for (long unsigned int i = 0; i < textArea.data.size(); i++)
     {
-        if (textArea.data[i] == '\n')
+        if (textArea.data[i] == '\n' && y < textArea.sizing.height - 1)
         {
-            PrintString(append, textArea.curseWindow, 2, 2, false);
+            PrintString(append, textArea.curseWindow, y, x, false);
+
+            if (textArea.toggleLines == true)
+            {
+                wattron(textArea.curseWindow, A_DIM);
+                PrintString(std::to_string(y), textArea.curseWindow, y, (x - x) + 1, false);
+                wattroff(textArea.curseWindow, A_DIM);
+            }
+
             append.clear();
+
+            y++;
+        } else
+        {
+            append.push_back(textArea.data[i]);
         }
-
-        append.push_back(textArea.data[i]);
     }
-
-    // PrintString(textArea.data, textArea.curseWindow, 2, 2, false);
 
     wrefresh(textArea.curseWindow);
 
