@@ -30,14 +30,12 @@ struct TextArea
 
 struct Panel
 {
-    WidgetType type;
-    Sizing sizing;
+
 };
 
 struct Text
 {
-    WidgetType type;
-    Sizing sizing;
+
 };
 
 struct Widget // parent-ish
@@ -56,14 +54,22 @@ class WidgetDriver
         WidgetDriver(CurseDriver curseDriver);
         ~WidgetDriver();
 
-        WidgetErrors RegisterWidget(Widget widget);
+        int RegisterWidget(Widget widget);
         
         WidgetErrors DisplayWidgets();
 
         WidgetErrors CheckWidgetInteraction();
 
+        // Menu related
         void *CreateMenuData(std::vector<std::string> choices, int nrChoices);
+        std::string FetchMenuSelection(Widget widget);
+        
+        // Text area related
         void *CreateTextAreaData(std::string data, bool enableLineNumbers);
+        void SetTextAreaData(int handle, std::string data, bool toggleLines);
+
+        // General
+        Widget GetWidget(int handle);
 
     private:
 
@@ -73,10 +79,6 @@ class WidgetDriver
         int m_registeredWidgets = 0;
         
         void DestroyWidgets();
-        
-
-
-
 };
 
 #endif

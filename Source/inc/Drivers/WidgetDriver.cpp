@@ -10,7 +10,7 @@ WidgetDriver::~WidgetDriver()
     DestroyWidgets();
 }
 
-WidgetErrors WidgetDriver::RegisterWidget(Widget widget)
+int WidgetDriver:: RegisterWidget(Widget widget)
 {
     Widget *newWidget = new Widget;
     *newWidget = widget;
@@ -52,7 +52,7 @@ WidgetErrors WidgetDriver::RegisterWidget(Widget widget)
     m_widgets[m_registeredWidgets] = *newWidget;
     m_registeredWidgets++;
 
-    return WidgetErrors::NO_ERROR_WIDGET;
+    return newWidget->handle;
 }
 
 
@@ -95,10 +95,9 @@ WidgetErrors WidgetDriver::DisplayWidgets()
     return WidgetErrors::NO_ERROR_WIDGET;
 }
 
-
 WidgetErrors WidgetDriver::CheckWidgetInteraction()
 {
-    for (int i = 0; i < MAX_NR_WIDGETS; i++)
+    for (int i = 0; i < 1; i++)
     {
         switch (m_widgets[i].type)
         {
@@ -144,6 +143,16 @@ void *WidgetDriver::CreateMenuData(std::vector<std::string> choices, int nrChoic
     return ptr;
 }
 
+std::string WidgetDriver::FetchMenuSelection(Widget widget)
+{
+    if (widget.handle < 0 && widget.type != M_MENU)
+    {
+        return std::string();
+    }
+
+    return m_curseDriver.FetchMenuSelection(widget.handle);
+}
+
 void *WidgetDriver::CreateTextAreaData(std::string data, bool toggleLines)
 {
     TextArea *ptr = (TextArea *) calloc(1, sizeof(TextArea));
@@ -157,6 +166,27 @@ void *WidgetDriver::CreateTextAreaData(std::string data, bool toggleLines)
     ptr->toggleLines = toggleLines;
 
     return ptr;
+}
+
+void WidgetDriver::SetTextAreaData(int handle, std::string data, bool toggleLines)
+{
+    if (m_widgets[handle].type == M_TEXTAREA)
+    {
+        Widget& widget = m_widgets[handle];
+        // delete &m_widgets[handle].data
+    
+        widget.data = CreateTextAreaData(data, toggleLines);
+
+        TextArea *textArea = (TextArea *) widget.data;
+        // std::cout << textArea->data << "\n";
+        m_curseDriver.UpdateTextArea(handle, textArea->data, textArea->toggleLines, widget.sizing);
+    }
+}
+
+Widget WidgetDriver::GetWidget(int handle)
+{
+    // probably segfaults, dont care tho   
+    return m_widgets[handle];
 }
 
 void WidgetDriver::DestroyWidgets()

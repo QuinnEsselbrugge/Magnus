@@ -18,7 +18,6 @@ class FileUtility
 
     */
 
-
     public:
         FileUtility();
         ~FileUtility();

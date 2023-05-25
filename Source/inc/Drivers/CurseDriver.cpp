@@ -29,7 +29,6 @@ CurseDriver::~CurseDriver()
     endwin();
 }
 
-
 /*!
     Creationists
 */
@@ -87,6 +86,7 @@ CurseDriverErrors CurseDriver::CreateTextArea(int handle, std::string data, bool
     {
         return CurseDriverErrors::DRIVER_INTERNAL_OPERATION_FAILURE_CURSE;
     }
+
     textArea->handle = handle;
     textArea->data = data;
     textArea->sizing = sizings;
@@ -151,17 +151,19 @@ CurseDriverErrors CurseDriver::DisplayTextArea(int handle, bool checkInteraction
 {
     TextArea& textArea = m_textAreas[GetTextArea(handle)];
 
-    if (textArea.handle < 0 && textArea.handle > MAX_NR_TEXT_AREAS)
+    if (textArea.handle < 0 || textArea.handle > MAX_NR_TEXT_AREAS)
     {
         return CurseDriverErrors::DRIVER_INTERNAL_OPERATION_FAILURE_CURSE;
     }
 
+    wclear(textArea.curseWindow);
+
     box(textArea.curseWindow, 0, 0);
 
     std::string append;
-    int x = 4;
+    int x = 6;
     int y = 1;
-    
+
     for (long unsigned int i = 0; i < textArea.data.size(); i++)
     {
         if (textArea.data[i] == '\n' && y < textArea.sizing.height - 1)
@@ -190,6 +192,34 @@ CurseDriverErrors CurseDriver::DisplayTextArea(int handle, bool checkInteraction
 
     return CurseDriverErrors::NO_ERROR_CURSE;
 }
+
+// todo, add existing check, code is currently very ambigious 
+
+/*! 
+    Updating
+*/
+
+CurseDriverErrors CurseDriver::UpdateTextArea(int handle, std::string data, bool toggleLines, Sizing sizings)
+{
+    if (handle < 0)
+    {
+        return CurseDriverErrors::DRIVER_INTERNAL_OPERATION_FAILURE_CURSE;
+    }
+
+    TextArea *textArea = &m_textAreas[GetTextArea(handle)];
+
+    textArea->data = data;
+    textArea->sizing = sizings;
+    textArea->toggleLines = toggleLines;
+    
+    return CurseDriverErrors::NO_ERROR_CURSE;
+}
+
+
+/*! 
+    Deleting
+*/
+// CurseDriverErrors DeleteTextArea(int handle);
 
 /*!
     Interactions
@@ -237,6 +267,21 @@ CurseDriverErrors CurseDriver::CheckMenuInteraction(int handle)
     return CurseDriverErrors::CREATION_FAILED_CURSE;
 }
 
+/*
+    Stuff for now
+*/
+std::string CurseDriver::FetchMenuSelection(int handle)
+{
+    // this will fuck up later, have fun future me lol
+    Menu& menu = m_menus[GetMenu(handle)];
+
+    if (menu.menuResult == nullptr)
+    {
+        return std::string();
+    }
+
+    return *menu.menuResult;
+}
 
 /*!
     Helpers
@@ -314,7 +359,6 @@ std::string CurseDriver::ShortenString(std::string str, int amount)
         total += wcwidth(str[strLen - strIndex]);
         str.pop_back();
 
-        // todo fix why its not doing enough characters, lol
         strIndex++;
 
         if (total >= amount)
@@ -332,7 +376,6 @@ std::string CurseDriver::ShortenString(std::string str, int amount)
 */
 int CurseDriver::GetMenu(int handle)
 {
-
     for (int i = 0; i < MAX_NR_MENUS; i++)
     {
         if (m_menus[i].handle == handle)

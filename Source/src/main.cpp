@@ -9,22 +9,22 @@ CurseDriver *curseDriver = new CurseDriver();
 WidgetDriver *widgetDriver = new WidgetDriver(*curseDriver);
 FileUtility *fileUtility = new FileUtility();
 
+
+std::string oldFile;
+std::string currentFile;
+
 int main()
 { 
-    std::string directory = "home/quinn/Music/asd/";
-    
+    std::string directory = "/home/quinn/Documents/hmvv";
     /* 
         TMP TESTING CODE, LMAO
     */  
 
-    std::vector<std::string> fullNames = fileUtility->GetFileNamesFromDirectory("/home/quinn/Music/asd/");
+    std::vector<std::string> fullNames = fileUtility->GetFileNamesFromDirectory("/home/quinn/Documents/hmvv/");
     std::vector<std::string> shortNames = fileUtility->GetShortFileNames(fullNames);
-    // std::cout << fullNames[0] << "\n";
 
     int row, col;
     getmaxyx(stdscr, row, col);
-
-    // std::cout << row << " " << col << "\n";
 
     Sizing titleSizing = {5, col, 0, 0};
     Widget title;
@@ -44,24 +44,52 @@ int main()
         shortNames,
         shortNames.size()
     );
-    widgetDriver->RegisterWidget(fileList);
-
+    int fileListHandle = widgetDriver->RegisterWidget(fileList);
 
     Sizing textAreasizing = {row - 5, col - 25, 25, 5};
     Widget textArea;
     textArea.type = M_TEXTAREA;
     textArea.sizing = textAreasizing;
     textArea.data = widgetDriver->CreateTextAreaData(
-        fileUtility->GetFileContents("/home/quinn/Desktop/mqtt.html"),
-         true
+        fileUtility->GetFileContents(fullNames[0]),
+        true
     );
-    widgetDriver->RegisterWidget(textArea);
+    currentFile = fullNames[0];
+
+    int textAreaHandle = widgetDriver->RegisterWidget(textArea);
 
     // int ch;
     //ch = getch()) != KEY_F(1)
     while(1)
     {
+        // Checking blocks, until interaction
+        widgetDriver->CheckWidgetInteraction();
+
+        Widget fetchMenu = widgetDriver->GetWidget(fileListHandle);
+
+        if (oldFile.compare(currentFile) != 0)
+        {
+            // hot reload textarea
+            // std::cout << "CHOICE:" << currentFile << "\n";
+
+            oldFile = currentFile;
+
+            widgetDriver->SetTextAreaData(
+                textAreaHandle,
+                fileUtility->GetFileContents(currentFile),
+                true
+            );
+        }
+
         widgetDriver->DisplayWidgets();
+
+        std::string selection = widgetDriver->FetchMenuSelection(fetchMenu);
+
+        if (selection.size() > 0)
+        {
+            currentFile = directory + "/" + selection;
+        }
+        
     }
 
     /* 

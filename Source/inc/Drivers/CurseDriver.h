@@ -30,7 +30,13 @@ class CurseDriver
         CurseDriverErrors DisplayMenu(int handle, bool checkInteraction = true);
         CurseDriverErrors DisplayTextArea(int handle, bool checkInteraction = true);
 
+        CurseDriverErrors UpdateTextArea(int handle, std::string data, bool toggleLines, Sizing sizings);
+
+        CurseDriverErrors DeleteTextArea(int handle);
+
         CurseDriverErrors CheckMenuInteraction(int handle);
+
+        std::string FetchMenuSelection(int handle);
         
     private:
 

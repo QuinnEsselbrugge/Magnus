@@ -1,6 +1,6 @@
 PRODUCT=Magnus
 
-CFLAGS=-Wall -Werror -Wextra -pedantic -ggdb -O0 -Iproduct -Iproduct/interfaces -std=c++17
+CFLAGS=-Wall -Werror  -Wextra -pedantic -ggdb -O0 -Iproduct -Iproduct/interfaces -std=c++17
 
 SOURCES=$(wildcard src/*.cpp) $(wildcard inc/Drivers/*.cpp) $(wildcard inc/Utilities/*.cpp)
 HEADERS=$(wildcard inc/Drivers/*.h) $(wildcard inc/Utilities/*.h) $(wildcard inc/Defines/*.h)
