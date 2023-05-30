@@ -51,27 +51,21 @@ int main()
     textArea.type = M_TEXTAREA;
     textArea.sizing = textAreasizing;
     textArea.data = widgetDriver->CreateTextAreaData(
-        fileUtility->GetFileContents(fullNames[0]),
+        fileUtility->GetFileContents(fullNames[3]),
         true
     );
-    currentFile = fullNames[0];
+    currentFile = fullNames[3];
 
     int textAreaHandle = widgetDriver->RegisterWidget(textArea);
 
-    // int ch;
-    //ch = getch()) != KEY_F(1)
     while(1)
     {
-        // Checking blocks, until interaction
-        widgetDriver->CheckWidgetInteraction();
 
         Widget fetchMenu = widgetDriver->GetWidget(fileListHandle);
 
         if (oldFile.compare(currentFile) != 0)
         {
             // hot reload textarea
-            // std::cout << "CHOICE:" << currentFile << "\n";
-
             oldFile = currentFile;
 
             widgetDriver->SetTextAreaData(
@@ -80,7 +74,8 @@ int main()
                 true
             );
         }
-
+        // Checking blocks, until interaction
+        widgetDriver->CheckWidgetInteraction();
         widgetDriver->DisplayWidgets();
 
         std::string selection = widgetDriver->FetchMenuSelection(fetchMenu);

@@ -6,6 +6,7 @@
 *  Proper color scheming for everything
 * Rethink structure of the use of utilities
 * Make it possible to set widgets to max width and max height of terminal scr
+* Fix newlines (Implement it on screen width rather then the \n)
 
 ## Getting started
 

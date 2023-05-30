@@ -57,7 +57,10 @@ CurseDriverErrors CurseDriver::CreateMenu(int handle, std::vector<std::string> c
 
     // Create window
     menu->curseWindow = newwin(sizings.height, sizings.width, sizings.startY, sizings.startX);
-    keypad(menu->curseWindow, TRUE);
+
+    wtimeout(menu->curseWindow, 10); // tmp, settings
+
+    keypad(menu->curseWindow, TRUE);    
 
     set_menu_mark(menu->curseMenu, " * ");
 
@@ -161,20 +164,20 @@ CurseDriverErrors CurseDriver::DisplayTextArea(int handle, bool checkInteraction
     box(textArea.curseWindow, 0, 0);
 
     std::string append;
-    int x = 6;
+    int offset = 5;
     int y = 1;
 
     for (long unsigned int i = 0; i < textArea.data.size(); i++)
     {
         if (textArea.data[i] == '\n' && y < textArea.sizing.height - 1)
         {
-            PrintString(append, textArea.curseWindow, y, x, false);
+            PrintString(append, textArea.curseWindow, y, offset, false);
 
             if (textArea.toggleLines == true)
             {
                 wattron(textArea.curseWindow, A_DIM);
-                PrintString(std::to_string(y), textArea.curseWindow, y, (x - x) + 1, false);
-                wattroff(textArea.curseWindow, A_DIM);
+                PrintString(std::to_string(y), textArea.curseWindow, y, (offset - offset) + 1, false);
+                wattroff(textArea.curseWindow, A_DIM);  
             }
 
             append.clear();
@@ -228,7 +231,7 @@ CurseDriverErrors CurseDriver::UpdateTextArea(int handle, std::string data, bool
 CurseDriverErrors CurseDriver::CheckMenuInteraction(int handle)
 {
     Menu& menu = m_menus[GetMenu(handle)];
-    int c = getch();
+    int c = wgetch(menu.curseWindow);
 
     switch(c)
     {
@@ -369,7 +372,6 @@ std::string CurseDriver::ShortenString(std::string str, int amount)
     
     return str;
 }
-
 
 /*!
     Getters
