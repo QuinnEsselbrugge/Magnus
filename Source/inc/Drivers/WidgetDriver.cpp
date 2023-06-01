@@ -64,7 +64,7 @@ WidgetErrors WidgetDriver::DisplayWidgets()
         {
             case M_MENU:
             {
-                m_curseDriver.DisplayMenu(m_widgets[i].handle, true);
+                m_curseDriver.DisplayMenu(m_widgets[i].handle, m_widgets[i].checkInteraction);
 
                 break;
 
@@ -84,7 +84,7 @@ WidgetErrors WidgetDriver::DisplayWidgets()
 
             case M_TEXTAREA:
             {
-                m_curseDriver.DisplayTextArea(m_widgets[i].handle, true);
+                m_curseDriver.DisplayTextArea(m_widgets[i].handle, m_widgets[i].checkInteraction);
 
                 break;
             }
@@ -104,21 +104,28 @@ WidgetErrors WidgetDriver::CheckWidgetInteraction()
             case M_MENU:
             {
                 m_curseDriver.CheckMenuInteraction(m_widgets[i].handle);
+
+                break;
+
             }
 
             case M_PANEL:
             {
+                break;
 
             }
 
             case M_TEXT:
             {
+                break;
 
             }
 
             case M_TEXTAREA:
             {
+                m_curseDriver.CheckTextAreaInteraction(m_widgets[i].handle);
 
+                break;
             }
         }
     }
@@ -164,7 +171,7 @@ void *WidgetDriver::CreateTextAreaData(std::string data, bool toggleLines)
 
     ptr->data = data;
     ptr->toggleLines = toggleLines;
-
+    
     return ptr;
 }
 

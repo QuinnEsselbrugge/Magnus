@@ -40,6 +40,7 @@ int main()
     Widget fileList;
     fileList.type = M_MENU;
     fileList.sizing = sizing;
+    fileList.checkInteraction = true;
     fileList.data = widgetDriver->CreateMenuData(
         shortNames,
         shortNames.size()
@@ -50,11 +51,12 @@ int main()
     Widget textArea;
     textArea.type = M_TEXTAREA;
     textArea.sizing = textAreasizing;
+    textArea.checkInteraction = true;
     textArea.data = widgetDriver->CreateTextAreaData(
-        fileUtility->GetFileContents(fullNames[3]),
+        fileUtility->GetFileContents(fullNames[0]),
         true
     );
-    currentFile = fullNames[3];
+    currentFile = fullNames[0];
 
     int textAreaHandle = widgetDriver->RegisterWidget(textArea);
 
@@ -75,7 +77,7 @@ int main()
             );
         }
         // Checking blocks, until interaction
-        widgetDriver->CheckWidgetInteraction();
+        // widgetDriver->CheckWidgetInteraction();
         widgetDriver->DisplayWidgets();
 
         std::string selection = widgetDriver->FetchMenuSelection(fetchMenu);

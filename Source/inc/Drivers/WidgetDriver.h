@@ -26,6 +26,7 @@ struct TextArea
 {
     std::string data;
     bool toggleLines = false;
+    bool checkInteraction = false;
 };
 
 struct Panel
@@ -43,6 +44,7 @@ struct Widget // parent-ish
     int handle;
     WidgetType type;
     Sizing sizing;
+    bool checkInteraction = false;
     void *data;
 };
 
@@ -65,7 +67,7 @@ class WidgetDriver
         std::string FetchMenuSelection(Widget widget);
         
         // Text area related
-        void *CreateTextAreaData(std::string data, bool enableLineNumbers);
+        void *CreateTextAreaData(std::string data, bool enableLineNumber);
         void SetTextAreaData(int handle, std::string data, bool toggleLines);
 
         // General

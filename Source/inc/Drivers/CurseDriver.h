@@ -35,6 +35,7 @@ class CurseDriver
         CurseDriverErrors DeleteTextArea(int handle);
 
         CurseDriverErrors CheckMenuInteraction(int handle);
+        CurseDriverErrors CheckTextAreaInteraction(int handle);
 
         std::string FetchMenuSelection(int handle);
         
@@ -59,12 +60,16 @@ class CurseDriver
             int handle;
             std::string data;
             bool toggleLines;
+            int topOffset = 0;
+            int contentHeight; // todo
             WINDOW * curseWindow;
             Sizing sizing;
         };
 
         Menu m_menus[MAX_NR_MENUS];
         TextArea m_textAreas[MAX_NR_TEXT_AREAS];
+
+        WINDOW *m_focusedWindow;
 
         int m_registeredMenus = 0;
         int m_registeredTextAreas = 0;
@@ -79,6 +84,8 @@ class CurseDriver
         
         int GetMenu(int handle);
         int GetTextArea(int handle);
+
+        void CheckFocus(WINDOW *curseWindow, int c);
 
         void DestroyMenus();
         void DestroyTextAreas();
