@@ -16,14 +16,13 @@ CurseDriver::CurseDriver()
 
     noecho();
 
-    // Init keypad (F1, F2, Arrow keys etc)
     clear();
 	cbreak();
     nodelay(stdscr, TRUE);
 
     keypad(stdscr, TRUE);
     
-    mousemask(BUTTON1_PRESSED | BUTTON2_PRESSED, NULL);
+	mousemask(ALL_MOUSE_EVENTS, NULL);
 }
 
 CurseDriver::~CurseDriver()
@@ -60,12 +59,11 @@ CurseDriverErrors CurseDriver::CreateMenu(int handle, std::vector<std::string> c
     // Create menu
     menu->curseMenu = new_menu((ITEM **)menu->curseItems);
 
-    // Create window
+    // Create windowCheckFocus
     menu->curseWindow = newwin(sizings.height, sizings.width, sizings.startY, sizings.startX);
 
-    wtimeout(menu->curseWindow, 10); // tmp, settings
-
-    keypad(menu->curseWindow, true);    
+    keypad(menu->curseWindow, true);
+    nodelay(menu->curseWindow, true); // tmp, settings
 
     set_menu_mark(menu->curseMenu, " * ");
 
@@ -81,7 +79,7 @@ CurseDriverErrors CurseDriver::CreateMenu(int handle, std::vector<std::string> c
 
     m_menus[m_registeredMenus++] = *menu;
 
-    DisplayMenu(handle, false);
+    DisplayMenu(handle);
 
     return CurseDriverErrors::NO_ERROR_CURSE;
 }
@@ -101,16 +99,16 @@ CurseDriverErrors CurseDriver::CreateTextArea(int handle, std::string data, bool
     textArea->toggleLines = toggleLines;
     textArea->curseWindow = newwin(sizings.height, sizings.width, sizings.startY, sizings.startX);
 
-    wtimeout(textArea->curseWindow, 10); // tmp, settings
+    keypad(textArea->curseWindow, true);
+    nodelay(textArea->curseWindow, true); // tmp, settings
 
-    keypad(textArea->curseWindow, true);    
     scrollok(textArea->curseWindow, true);
     idlok(textArea->curseWindow, true);
 
     // tmp    
     m_textAreas[m_registeredTextAreas++] = *textArea;
 
-    DisplayTextArea(handle, false);
+    DisplayTextArea(handle);
 
     return CurseDriverErrors::NO_ERROR_CURSE;
 }
@@ -120,18 +118,13 @@ CurseDriverErrors CurseDriver::CreateTextArea(int handle, std::string data, bool
 */
 
 //todo : subdivide and improve
-CurseDriverErrors CurseDriver::DisplayMenu(int handle, bool checkInteraction)
+CurseDriverErrors CurseDriver::DisplayMenu(int handle)
 {
     Menu& menu = m_menus[GetMenu(handle)];
 
     if (menu.handle < 0 && menu.handle > MAX_NR_MENUS)
     {
         return CurseDriverErrors::DRIVER_INTERNAL_OPERATION_FAILURE_CURSE;
-    }
-
-    if (checkInteraction == true)
-    {
-        CheckMenuInteraction(handle);
     }
 
     // tmp pseudo
@@ -162,7 +155,7 @@ CurseDriverErrors CurseDriver::DisplayMenu(int handle, bool checkInteraction)
 }
 
 // todo split
-CurseDriverErrors CurseDriver::DisplayTextArea(int handle, bool checkInteraction)
+CurseDriverErrors CurseDriver::DisplayTextArea(int handle)
 {
     TextArea& textArea = m_textAreas[GetTextArea(handle)];
 
@@ -171,17 +164,12 @@ CurseDriverErrors CurseDriver::DisplayTextArea(int handle, bool checkInteraction
         return CurseDriverErrors::DRIVER_INTERNAL_OPERATION_FAILURE_CURSE;
     }
 
-    if (checkInteraction == true)
-    {
-        CheckTextAreaInteraction(handle);
-    }
-
-    box(textArea.curseWindow, '-', '*');
+    box(textArea.curseWindow, 0, 0);
 
     wclear(textArea.curseWindow);
 
     std::string append;
-    int offset = 5;
+    int offset = 5; // todo settings
     int y = textArea.topOffset;
 
     for (long unsigned int i = 0; i < textArea.data.size(); i++)
@@ -218,7 +206,6 @@ CurseDriverErrors CurseDriver::DisplayTextArea(int handle, bool checkInteraction
 /*! 
     Updating
 */
-
 CurseDriverErrors CurseDriver::UpdateTextArea(int handle, std::string data, bool toggleLines, Sizing sizings)
 {
     if (handle < 0)
@@ -241,7 +228,6 @@ CurseDriverErrors CurseDriver::UpdateTextArea(int handle, std::string data, bool
 /*! 
     Deleting
 */
-// CurseDriverErrors DeleteTextArea(int handle);
 
 /*!
     Interactions
@@ -250,13 +236,14 @@ CurseDriverErrors CurseDriver::UpdateTextArea(int handle, std::string data, bool
 CurseDriverErrors CurseDriver::CheckMenuInteraction(int handle)
 {
     Menu& menu = m_menus[GetMenu(handle)];
+
     int c = wgetch(menu.curseWindow);
 
-    if (m_focusedWindow == menu.curseWindow)
+    if ((CheckInteractionFocusChange(menu.curseWindow, menu.sizing, c) == false) && m_focused != menu.curseWindow)
     {
-        keypad(menu.curseWindow, true);
+        return CurseDriverErrors::NO_ERROR_CURSE;
     }
-
+    
     switch(c)
     {
         case KEY_DOWN:
@@ -280,23 +267,10 @@ CurseDriverErrors CurseDriver::CheckMenuInteraction(int handle)
         case 10:
             std::string *ptr = menu.menuResult;
             *ptr = menu.choices[menu.selectedIndex];
-
-            // std::cout << "                     " <<  *menu.menuResult << "\n\n\n\r\n";
-            // wmove(menu.curseWindow, 20, 0);
-            // wclrtoeol(menu.curseWindow);
-            // std::cout<< item_name(current_item(menu.curseMenu)) << "\n";
-            // mvprintw(20, 0, "Item selected is : %s", 
-            //                 item_name(current_item(menu.curseMenu)));
-            // pos_menu_cursor(menu.curseMenu);
         break;
     }
 
-    CheckFocus(menu.curseWindow, c);
-
-    keypad(menu.curseWindow, false);
-
-
-    return CurseDriverErrors::CREATION_FAILED_CURSE;
+    return CurseDriverErrors::NO_ERROR_CURSE;
 }
 
 CurseDriverErrors CurseDriver::CheckTextAreaInteraction(int handle)
@@ -305,10 +279,9 @@ CurseDriverErrors CurseDriver::CheckTextAreaInteraction(int handle)
 
     int c = wgetch(textArea.curseWindow);
 
-    // note for future: the scroll logic is in reverse of what youd expect it to be.
-    if (m_focusedWindow == textArea.curseWindow)
+    if (CheckInteractionFocusChange(textArea.curseWindow, textArea.sizing, c) == false && m_focused != textArea.curseWindow)
     {
-        keypad(textArea.curseWindow, true);
+        return CurseDriverErrors::NO_ERROR_CURSE;
     }
 
     switch(c)
@@ -317,7 +290,7 @@ CurseDriverErrors CurseDriver::CheckTextAreaInteraction(int handle)
             wscrl(textArea.curseWindow, -1);
             textArea.topOffset -= 1;
 
-            DisplayTextArea(handle, false);
+            DisplayTextArea(handle);
         break;
 
         case KEY_UP:
@@ -326,16 +299,12 @@ CurseDriverErrors CurseDriver::CheckTextAreaInteraction(int handle)
                 wscrl(textArea.curseWindow, 1);
                 textArea.topOffset += 1;
 
-                DisplayTextArea(handle, false);
+                DisplayTextArea(handle);
             }
         break;
     }
 
-    CheckFocus(textArea.curseWindow, c);
-
-    keypad(textArea.curseWindow, false);
-
-    return CurseDriverErrors::CREATION_FAILED_CURSE;
+    return CurseDriverErrors::NO_ERROR_CURSE;
 }
 
 /*
@@ -441,6 +410,33 @@ std::string CurseDriver::ShortenString(std::string str, int amount)
     return str;
 }
 
+bool CurseDriver::CheckInteractionFocusChange(WINDOW *window, Sizing bounds, int c)
+{
+    MEVENT event;
+
+    if(c == KEY_MOUSE)
+    {
+        if(getmouse(&event) == OK && ClickInBounds(event.y, event.x, bounds) == true)
+        {
+            m_focused = window;
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool CurseDriver::ClickInBounds(int y, int x, Sizing bounds)
+{
+    if (y >= bounds.startY && y <= (bounds.startY + bounds.height) && x >= bounds.startX && x <= (bounds.startX + bounds.width))
+    {
+        return true;
+    }
+
+    return false;
+}
+
 /*!
     Getters
 */
@@ -468,34 +464,6 @@ int CurseDriver::GetTextArea(int handle)
     }
 
     return -1;
-}
-
-
-/*!
-    Usefull
-*/
-
-
-void CurseDriver::CheckFocus(WINDOW *curseWindow, int c)
-{
-    MEVENT event;
-
-    if (getmouse(&event) == OK && (m_focusedWindow == nullptr || m_focusedWindow != curseWindow))
-    {
-
-        keypad(curseWindow, true);
-
-        switch(c)
-        {
-            case KEY_MOUSE:
-                // set focus to
-                m_focusedWindow = curseWindow;
-
-            break;
-        }
-
-        keypad(curseWindow, false);
-    }
 }
 
 /*!

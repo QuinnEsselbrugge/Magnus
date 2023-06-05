@@ -64,7 +64,7 @@ WidgetErrors WidgetDriver::DisplayWidgets()
         {
             case M_MENU:
             {
-                m_curseDriver.DisplayMenu(m_widgets[i].handle, m_widgets[i].checkInteraction);
+                m_curseDriver.DisplayMenu(m_widgets[i].handle);
 
                 break;
 
@@ -84,7 +84,7 @@ WidgetErrors WidgetDriver::DisplayWidgets()
 
             case M_TEXTAREA:
             {
-                m_curseDriver.DisplayTextArea(m_widgets[i].handle, m_widgets[i].checkInteraction);
+                m_curseDriver.DisplayTextArea(m_widgets[i].handle);
 
                 break;
             }
@@ -97,35 +97,38 @@ WidgetErrors WidgetDriver::DisplayWidgets()
 
 WidgetErrors WidgetDriver::CheckWidgetInteraction()
 {
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < m_registeredWidgets; i++)
     {
-        switch (m_widgets[i].type)
+        if (m_widgets[i].checkInteraction == true)
         {
-            case M_MENU:
+            switch (m_widgets[i].type)
             {
-                m_curseDriver.CheckMenuInteraction(m_widgets[i].handle);
+                case M_MENU:
+                {
+                    m_curseDriver.CheckMenuInteraction(m_widgets[i].handle);
 
-                break;
+                    break;
 
-            }
+                }
 
-            case M_PANEL:
-            {
-                break;
+                case M_PANEL:
+                {
+                    break;
 
-            }
+                }
 
-            case M_TEXT:
-            {
-                break;
+                case M_TEXT:
+                {
+                    break;
 
-            }
+                }
 
-            case M_TEXTAREA:
-            {
-                m_curseDriver.CheckTextAreaInteraction(m_widgets[i].handle);
+                case M_TEXTAREA:
+                {
+                    m_curseDriver.CheckTextAreaInteraction(m_widgets[i].handle);
 
-                break;
+                    break;
+                }
             }
         }
     }

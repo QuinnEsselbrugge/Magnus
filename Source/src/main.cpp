@@ -77,8 +77,8 @@ int main()
             );
         }
         // Checking blocks, until interaction
-        // widgetDriver->CheckWidgetInteraction();
-        widgetDriver->DisplayWidgets();
+        widgetDriver->CheckWidgetInteraction();
+        // widgetDriver->DisplayWidgets();
 
         std::string selection = widgetDriver->FetchMenuSelection(fetchMenu);
 

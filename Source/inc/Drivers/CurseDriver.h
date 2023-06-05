@@ -27,8 +27,8 @@ class CurseDriver
         CurseDriverErrors CreateMenu(int handle, std::vector<std::string> choices, int nrChoices, Sizing sizings);
         CurseDriverErrors CreateTextArea(int handle, std::string data, bool toggleLines, Sizing sizings);
         
-        CurseDriverErrors DisplayMenu(int handle, bool checkInteraction = true);
-        CurseDriverErrors DisplayTextArea(int handle, bool checkInteraction = true);
+        CurseDriverErrors DisplayMenu(int handle);
+        CurseDriverErrors DisplayTextArea(int handle);
 
         CurseDriverErrors UpdateTextArea(int handle, std::string data, bool toggleLines, Sizing sizings);
 
@@ -69,7 +69,7 @@ class CurseDriver
         Menu m_menus[MAX_NR_MENUS];
         TextArea m_textAreas[MAX_NR_TEXT_AREAS];
 
-        WINDOW *m_focusedWindow;
+        void *m_focused;
 
         int m_registeredMenus = 0;
         int m_registeredTextAreas = 0;
@@ -82,14 +82,14 @@ class CurseDriver
         std::string StringElipsis(std::string str, int cutoffSize);
         std::string ShortenString(std::string str, int amount);
         
+        bool CheckInteractionFocusChange(WINDOW *window, Sizing bounds, int c);
+        bool ClickInBounds(int y, int x, Sizing bounds);
+
         int GetMenu(int handle);
         int GetTextArea(int handle);
 
-        void CheckFocus(WINDOW *curseWindow, int c);
-
         void DestroyMenus();
         void DestroyTextAreas();
-
 };
 
 
