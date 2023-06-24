@@ -5,6 +5,7 @@
 #define FILE_CHARACTER_LIMIT 200
 #define MAX_LIST_ITEMS 300
 #define MAX_NR_WIDGETS 100
+#define MAX_NR_WINDOWS 800
 #define BASH_STR_WIDTH_BUFFER 3
 
 // Specific defines

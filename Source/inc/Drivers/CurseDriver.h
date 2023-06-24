@@ -30,6 +30,8 @@ class CurseDriver
         CurseDriverErrors DisplayMenu(int handle);
         CurseDriverErrors DisplayTextArea(int handle);
 
+        CurseDriverErrors UpdateScreen();
+
         CurseDriverErrors UpdateTextArea(int handle, std::string data, bool toggleLines, Sizing sizings);
 
         CurseDriverErrors DeleteTextArea(int handle);
@@ -37,9 +39,18 @@ class CurseDriver
         CurseDriverErrors CheckMenuInteraction(int handle);
         CurseDriverErrors CheckTextAreaInteraction(int handle);
 
+        CurseDriverErrors UpdatePressed();
+        CurseDriverErrors CheckFocus();
+
         std::string FetchMenuSelection(int handle);
         
     private:
+
+        struct GenericWindow
+        {
+            Sizing bounds;
+            void * windowAddr;
+        };
 
         struct Menu
         {
@@ -69,21 +80,29 @@ class CurseDriver
         Menu m_menus[MAX_NR_MENUS];
         TextArea m_textAreas[MAX_NR_TEXT_AREAS];
 
+
+        GenericWindow m_windows[MAX_NR_WINDOWS];
+
         void *m_focused;
 
         int m_registeredMenus = 0;
         int m_registeredTextAreas = 0;
+        int m_registeredWindows = 0;
+
+        int m_currentChar;
 
         CurseDriverErrors InsertItemChoices(ITEM **curseItems, std::vector<std::string> choices, int nrChoices);
-    
+
+        // todo: seperate
         void PrintString(std::string string, WINDOW *curseWindow, int y, int x, bool highlight);
 
         int GetStringWidth(std::string str);
         std::string StringElipsis(std::string str, int cutoffSize);
         std::string ShortenString(std::string str, int amount);
         
-        bool CheckInteractionFocusChange(WINDOW *window, Sizing bounds, int c);
-        bool ClickInBounds(int y, int x, Sizing bounds);
+        bool PosInBounds(int y, int x, Sizing bounds);
+
+        void *FetchWindowAtPos(int y, int x);
 
         int GetMenu(int handle);
         int GetTextArea(int handle);

@@ -58,6 +58,7 @@ int WidgetDriver:: RegisterWidget(Widget widget)
 
 WidgetErrors WidgetDriver::DisplayWidgets()
 {
+    // build all updates
     for (int i = 0; i < m_registeredWidgets; i++)
     {
         switch (m_widgets[i].type)
@@ -89,8 +90,10 @@ WidgetErrors WidgetDriver::DisplayWidgets()
                 break;
             }
         }
-
     }
+
+    // Update the screen (fires doupdate buffer  https://linux.die.net/man/3/doupdate)
+    m_curseDriver.UpdateScreen();
 
     return WidgetErrors::NO_ERROR_WIDGET;
 }
@@ -101,6 +104,11 @@ WidgetErrors WidgetDriver::CheckWidgetInteraction()
     {
         if (m_widgets[i].checkInteraction == true)
         {
+            m_curseDriver.UpdatePressed();
+
+            m_curseDriver.CheckFocus();
+
+
             switch (m_widgets[i].type)
             {
                 case M_MENU:

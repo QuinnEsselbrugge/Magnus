@@ -1,9 +1,5 @@
 #include "CurseDriver.h"
 
-
-
-
-// todo : implement building the file list and write base code for the curse driver...
 CurseDriver::CurseDriver() 
 {
     // Start stdscr
@@ -15,14 +11,16 @@ CurseDriver::CurseDriver()
     start_color();
 
     noecho();
+    nodelay(stdscr, true);
 
     clear();
 	cbreak();
-    nodelay(stdscr, TRUE);
+
 
     keypad(stdscr, TRUE);
-    
-	mousemask(ALL_MOUSE_EVENTS, NULL);
+
+	mousemask(BUTTON1_CLICKED | BUTTON2_CLICKED, NULL);
+    // mouseinterval(0);
 }
 
 CurseDriver::~CurseDriver()
@@ -78,6 +76,7 @@ CurseDriverErrors CurseDriver::CreateMenu(int handle, std::vector<std::string> c
     post_menu(menu->curseMenu);
 
     m_menus[m_registeredMenus++] = *menu;
+    m_windows[m_registeredWindows++] = {sizings, menu->curseWindow};
 
     DisplayMenu(handle);
 
@@ -105,8 +104,8 @@ CurseDriverErrors CurseDriver::CreateTextArea(int handle, std::string data, bool
     scrollok(textArea->curseWindow, true);
     idlok(textArea->curseWindow, true);
 
-    // tmp    
     m_textAreas[m_registeredTextAreas++] = *textArea;
+    m_windows[m_registeredWindows++] = {sizings, textArea->curseWindow};
 
     DisplayTextArea(handle);
 
@@ -130,7 +129,7 @@ CurseDriverErrors CurseDriver::DisplayMenu(int handle)
     // tmp pseudo
     int y = 1;
     int x = 2;
-
+    
     box(menu.curseWindow, 0, 0);
 
     for (int i = 0; i < menu.nrItems; i++)
@@ -149,7 +148,7 @@ CurseDriverErrors CurseDriver::DisplayMenu(int handle)
         y++;
     }
 
-    wrefresh(menu.curseWindow);
+    wnoutrefresh(menu.curseWindow);
 
     return CurseDriverErrors::NO_ERROR_CURSE;
 }
@@ -164,9 +163,10 @@ CurseDriverErrors CurseDriver::DisplayTextArea(int handle)
         return CurseDriverErrors::DRIVER_INTERNAL_OPERATION_FAILURE_CURSE;
     }
 
-    box(textArea.curseWindow, 0, 0);
+    // werase instead of wclear because this only clears part of it preventing flickering
+    werase(textArea.curseWindow);
 
-    wclear(textArea.curseWindow);
+    box(textArea.curseWindow, 0, 0);
 
     std::string append;
     int offset = 5; // todo settings
@@ -196,8 +196,15 @@ CurseDriverErrors CurseDriver::DisplayTextArea(int handle)
         textArea.contentHeight++;
     }
 
-    wrefresh(textArea.curseWindow);
+    wnoutrefresh(textArea.curseWindow);
 
+    return CurseDriverErrors::NO_ERROR_CURSE;
+}
+
+CurseDriverErrors CurseDriver::UpdateScreen()
+{
+    doupdate();
+    
     return CurseDriverErrors::NO_ERROR_CURSE;
 }
 
@@ -224,7 +231,6 @@ CurseDriverErrors CurseDriver::UpdateTextArea(int handle, std::string data, bool
     return CurseDriverErrors::NO_ERROR_CURSE;
 }
 
-
 /*! 
     Deleting
 */
@@ -237,14 +243,12 @@ CurseDriverErrors CurseDriver::CheckMenuInteraction(int handle)
 {
     Menu& menu = m_menus[GetMenu(handle)];
 
-    int c = wgetch(menu.curseWindow);
-
-    if ((CheckInteractionFocusChange(menu.curseWindow, menu.sizing, c) == false) && m_focused != menu.curseWindow)
+    if (m_focused != menu.curseWindow)
     {
         return CurseDriverErrors::NO_ERROR_CURSE;
     }
-    
-    switch(c)
+
+    switch(m_currentChar)
     {
         case KEY_DOWN:
                 menu.selectedIndex = menu.selectedIndex + 1;
@@ -262,6 +266,7 @@ CurseDriverErrors CurseDriver::CheckMenuInteraction(int handle)
                 {
                     menu.selectedIndex = menu.nrItems - 1;
                 }
+
         break;
 
         case 10:
@@ -270,6 +275,8 @@ CurseDriverErrors CurseDriver::CheckMenuInteraction(int handle)
         break;
     }
 
+    m_currentChar = -1;
+
     return CurseDriverErrors::NO_ERROR_CURSE;
 }
 
@@ -277,16 +284,14 @@ CurseDriverErrors CurseDriver::CheckTextAreaInteraction(int handle)
 {
     TextArea& textArea = m_textAreas[GetTextArea(handle)];
 
-    int c = wgetch(textArea.curseWindow);
-
-    if (CheckInteractionFocusChange(textArea.curseWindow, textArea.sizing, c) == false && m_focused != textArea.curseWindow)
+    if (m_focused != textArea.curseWindow)
     {
         return CurseDriverErrors::NO_ERROR_CURSE;
     }
 
-    switch(c)
+    switch(m_currentChar)
     {
-        case KEY_DOWN:
+        case KEY_DOWN: case KEY_MOUSE:
             wscrl(textArea.curseWindow, -1);
             textArea.topOffset -= 1;
 
@@ -304,7 +309,72 @@ CurseDriverErrors CurseDriver::CheckTextAreaInteraction(int handle)
         break;
     }
 
+    m_currentChar = -1;
+
     return CurseDriverErrors::NO_ERROR_CURSE;
+}
+
+CurseDriverErrors CurseDriver::UpdatePressed()
+{
+    int ch = getch();
+
+    if (ch == -1)
+    {
+        return CurseDriverErrors::DRIVER_INTERNAL_OPERATION_FAILURE_CURSE;
+    }
+
+    m_currentChar = ch;
+
+    return CurseDriverErrors::NO_ERROR_CURSE;
+}
+
+CurseDriverErrors CurseDriver::CheckFocus()
+{
+    if (m_currentChar != KEY_MOUSE)
+    {
+        return CurseDriverErrors::NO_ERROR_CURSE;
+    }
+
+    MEVENT event;
+
+    if (getmouse(&event) == OK)
+    {
+        void *fetched = FetchWindowAtPos(event.y, event.x);
+
+        if (fetched == nullptr)
+        {
+            return CurseDriverErrors::DRIVER_INTERNAL_OPERATION_FAILURE_CURSE;
+        }
+
+        m_focused = fetched;
+
+        return CurseDriverErrors::NO_ERROR_CURSE;
+    }
+
+    return CurseDriverErrors::NO_ERROR_CURSE;
+}
+
+void *CurseDriver::FetchWindowAtPos(int y, int x)
+{
+    if (y < 0 || x < 0)
+    {
+        return nullptr;
+    } 
+
+    for (int i = 0; i < MAX_NR_WINDOWS; i++)
+    {
+        if (m_windows[i].windowAddr == nullptr) // end of array
+        {
+            return nullptr;
+        }
+
+        if (PosInBounds(y, x, m_windows[i].bounds))
+        {
+            return m_windows[i].windowAddr;
+        }
+    }
+
+    return nullptr;
 }
 
 /*
@@ -410,24 +480,26 @@ std::string CurseDriver::ShortenString(std::string str, int amount)
     return str;
 }
 
-bool CurseDriver::CheckInteractionFocusChange(WINDOW *window, Sizing bounds, int c)
-{
-    MEVENT event;
+// bool CurseDriver::CheckInteractionFocusChange(WINDOW *window, Sizing bounds)
+// {
+//     MEVENT event;
+//     int c = getch();
 
-    if(c == KEY_MOUSE)
-    {
-        if(getmouse(&event) == OK && ClickInBounds(event.y, event.x, bounds) == true)
-        {
-            m_focused = window;
+//     if(c == KEY_MOUSE)
+//     {
+//         if(getmouse(&event) == OK && ClickInBounds(event.y, event.x, bounds) == true)
+//         {
+//             std::cout << "CLICK" << window << "\n";
+//             m_focused = window;
 
-            return true;
-        }
-    }
+//             return true;
+//         }
+//     }
 
-    return false;
-}
+//     return false;
+// }
 
-bool CurseDriver::ClickInBounds(int y, int x, Sizing bounds)
+bool CurseDriver::PosInBounds(int y, int x, Sizing bounds)
 {
     if (y >= bounds.startY && y <= (bounds.startY + bounds.height) && x >= bounds.startX && x <= (bounds.startX + bounds.width))
     {
